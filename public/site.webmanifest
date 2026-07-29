@@ -1,0 +1,17 @@
+{
+  "name": "Deebyanshu Jha Portfolio",
+  "short_name": "Deebyanshu",
+  "description": "Software engineer portfolio focused on systems, backend, compilers, networking, and algorithms.",
+  "start_url": "/my_portfolio/",
+  "display": "standalone",
+  "background_color": "#09090B",
+  "theme_color": "#09090B",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
