@@ -40,7 +40,7 @@ export const profile = {
   githubUsername: "deebyanshujha",
   github: "https://github.com/deebyanshujha",
   linkedin: "https://www.linkedin.com/in/deebyanshujha/",
-  resumeUrl: "/resume/Deebyanshu-Jha-Resume.pdf",
+  resumeUrl: `${import.meta.env.BASE_URL}resume/Deebyanshu-Jha-Resume.pdf`,
   lambDocs: "https://deebyanshujha.github.io/docs-lamb/",
   summary:
     "I am a Computer Science undergraduate at VIT Vellore specializing in Internet of Things. I enjoy building software from first principles, with interests in systems programming, backend development, compilers, networking, and data structures and algorithms. I have solved 700+ DSA problems and enjoy turning ideas into practical software through clean, scalable implementations.",
@@ -61,10 +61,22 @@ export const navItems = [
 ] as const;
 
 export const heroMetrics: Metric[] = [
-  { label: "DSA problems solved", value: "700+", helper: "Across major coding platforms" },
+  {
+    label: "DSA problems solved",
+    value: "700+",
+    helper: "Across major coding platforms",
+  },
   { label: "CGPA", value: "9.12/10", helper: "B.Tech CSE IoT, VIT Vellore" },
-  { label: "CodeChef", value: "2-Star", helper: "Competitive programming profile" },
-  { label: "Certifications", value: "5", helper: "DSA, OOP, SQL, Python, problem solving" },
+  {
+    label: "CodeChef",
+    value: "2-Star",
+    helper: "Competitive programming profile",
+  },
+  {
+    label: "Certifications",
+    value: "5",
+    helper: "DSA, OOP, SQL, Python, problem solving",
+  },
 ];
 
 export const education: EducationItem[] = [
@@ -102,7 +114,13 @@ export const skillGroups: SkillGroup[] = [
     title: "Backend",
     icon: Server,
     accent: "violet",
-    skills: ["Node.js", "Express.js", "REST APIs", "JWT Auth", "Input validation"],
+    skills: [
+      "Node.js",
+      "Express.js",
+      "REST APIs",
+      "JWT Auth",
+      "Input validation",
+    ],
   },
   {
     title: "Frontend",
@@ -126,7 +144,13 @@ export const skillGroups: SkillGroup[] = [
     title: "Systems",
     icon: Cpu,
     accent: "violet",
-    skills: ["Operating Systems", "Computer Networks", "Concurrency", "Multithreading", "Synchronization"],
+    skills: [
+      "Operating Systems",
+      "Computer Networks",
+      "Concurrency",
+      "Multithreading",
+      "Synchronization",
+    ],
   },
   {
     title: "Core CS",
@@ -146,7 +170,13 @@ export const projects: Project[] = [
     docs: "https://deebyanshujha.github.io/docs-lamb/",
     description:
       "A custom interpreted programming language built in Java with lexical analysis, parsing, AST generation, variable scoping, functions, closures, classes, inheritance, and custom language features.",
-    techStack: ["Java", "Interpreter Design", "Recursive Descent Parsing", "AST", "OOP"],
+    techStack: [
+      "Java",
+      "Interpreter Design",
+      "Recursive Descent Parsing",
+      "AST",
+      "OOP",
+    ],
     features: [
       "Multi-stage compiler pipeline from lexer to scope-based name resolution.",
       "Runtime support for closures, first-class functions, classes, and inheritance.",
@@ -173,7 +203,13 @@ export const projects: Project[] = [
     github: "https://github.com/deebyanshujha/ChatterNet",
     description:
       "A concurrent TCP chat server in C++ implementing socket programming, real-time communication, persistent chat rooms, direct messaging, broadcasts, and graceful disconnect handling.",
-    techStack: ["C++", "TCP/IP", "Socket Programming", "Multithreading", "Winsock"],
+    techStack: [
+      "C++",
+      "TCP/IP",
+      "Socket Programming",
+      "Multithreading",
+      "Winsock",
+    ],
     features: [
       "Supports 50+ simultaneous client connections with low-latency message delivery.",
       "Routes messages across chat rooms, username-based direct messages, and broadcasts.",
@@ -200,7 +236,14 @@ export const projects: Project[] = [
     github: "https://github.com/deebyanshujha/Project_camp",
     description:
       "A full-stack project management platform with authentication, project organization, hierarchical tasks, nested subtasks, and collaborative workflow features.",
-    techStack: ["Node.js", "Express.js", "MongoDB", "React", "REST API Design", "JWT"],
+    techStack: [
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "React",
+      "REST API Design",
+      "JWT",
+    ],
     features: [
       "Role-based membership, project organization, nested subtasks, and team workflows.",
       "Secure REST APIs with JWT authentication, input validation, and structured routing.",
@@ -228,7 +271,13 @@ export const achievements: Achievement[] = [
     date: "Ongoing",
     description:
       "Solved 700+ data structures and algorithms problems across LeetCode, CodeChef, GeeksforGeeks, and HackerRank.",
-    details: ["Arrays", "Graphs", "Trees", "Dynamic programming", "System design patterns"],
+    details: [
+      "Arrays",
+      "Graphs",
+      "Trees",
+      "Dynamic programming",
+      "System design patterns",
+    ],
   },
   {
     title: "LeetCode Performance",
@@ -236,7 +285,10 @@ export const achievements: Achievement[] = [
     date: "Current resume",
     description:
       "Ranked in the top 25% globally with a top 150,000 worldwide ranking.",
-    details: ["Reviews optimal solutions", "Applies new algorithmic patterns to future problems"],
+    details: [
+      "Reviews optimal solutions",
+      "Applies new algorithmic patterns to future problems",
+    ],
   },
   {
     title: "CodeChef Rating Milestone",
@@ -244,7 +296,10 @@ export const achievements: Achievement[] = [
     date: "Current resume",
     description:
       "Earned a 2-Star CodeChef profile through consistent contest and practice work.",
-    details: ["Rated programming profile", "Continuous improvement through feedback"],
+    details: [
+      "Rated programming profile",
+      "Continuous improvement through feedback",
+    ],
   },
   {
     title: "Research Direction",
@@ -260,7 +315,10 @@ export const achievements: Achievement[] = [
     date: "2024 - 2028",
     description:
       "Maintaining a 9.12/10 CGPA in B.Tech Computer Science and Engineering, Internet of Things, at VIT Vellore.",
-    details: ["Computer Science fundamentals", "Internet of Things specialization"],
+    details: [
+      "Computer Science fundamentals",
+      "Internet of Things specialization",
+    ],
   },
 ];
 
