@@ -13,43 +13,44 @@ export function Achievements() {
       title="Signals of consistency, curiosity, and technical range."
       description="A timeline of verified competitive programming, academic, research, and certification milestones."
     >
-      <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
         <div className="relative">
-          <div className="absolute left-4 top-2 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-electric via-violet to-transparent" />
+          <div className="absolute bottom-0 left-4 top-2 w-px bg-gradient-to-b from-electric via-violet to-transparent" />
           <FadeIn className="space-y-5">
-            {achievements.map((achievement, index) => (
-              <motion.article
-                key={achievement.title}
-                className="relative ml-10 rounded-lg border border-border-subtle bg-glass-bg p-5 backdrop-blur-xl"
-              >
-                <span className="absolute -left-[2.15rem] top-6 grid size-8 place-items-center rounded-md border border-border-subtle bg-canvas text-electric">
-                  <Award className="size-4" />
-                </span>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Badge className="border-violet/25 bg-violet/10 text-violet">
-                    {achievement.category}
-                  </Badge>
-                  <span className="font-code text-xs text-secondary">
-                    {achievement.date}
+            {achievements.map((achievement) => (
+              <div key={achievement.title} className="flex gap-4">
+                <div className="flex w-8 shrink-0 justify-center pt-5">
+                  <span className="relative z-10 grid size-8 place-items-center rounded-md border border-border-subtle bg-canvas text-electric">
+                    <Award className="size-4" />
                   </span>
                 </div>
-                <h3 className="mt-3 font-display text-xl font-semibold text-primary">
-                  {achievement.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-secondary">
-                  {achievement.description}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {achievement.details.map((detail) => (
-                    <Badge key={detail}>{detail}</Badge>
-                  ))}
-                </div>
-              </motion.article>
+                <motion.article className="min-w-0 flex-1 rounded-lg border border-border-subtle bg-glass-bg p-5 backdrop-blur-xl">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Badge className="border-violet/25 bg-violet/10 text-violet">
+                      {achievement.category}
+                    </Badge>
+                    <span className="font-code text-xs text-secondary">
+                      {achievement.date}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 font-display text-xl font-semibold text-primary">
+                    {achievement.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-secondary">
+                    {achievement.description}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {achievement.details.map((detail) => (
+                      <Badge key={detail}>{detail}</Badge>
+                    ))}
+                  </div>
+                </motion.article>
+              </div>
             ))}
           </FadeIn>
         </div>
 
-        <FadeIn className="gradient-border rounded-lg bg-glass-bg p-5 shadow-soft">
+        <FadeIn className="rounded-lg border border-border-subtle bg-glass-bg p-5 shadow-soft lg:self-start">
           <div className="flex items-center gap-3">
             <div className="grid size-11 place-items-center rounded-md border border-border-subtle bg-card text-mint">
               <BadgeCheck className="size-5" />
@@ -63,7 +64,7 @@ export function Achievements() {
               </h3>
             </div>
           </div>
-          <div className="mt-6 space-y-4">
+          <div className="mt-5 space-y-3">
             {certifications.map((certification) => (
               <article
                 key={certification.credentialId}
