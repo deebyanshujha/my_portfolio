@@ -19,9 +19,18 @@ const HeroScene = lazy(() =>
 );
 
 const snippets = [
-  { label: "compiler pipeline", code: "lexer -> parser -> AST -> resolver" },
-  { label: "network loop", code: "accept(client); route(room, payload);" },
-  { label: "api contract", code: "POST /projects -> validate -> persist" },
+  {
+    label: "compiler pipeline",
+    code: "lexer -> parser -> AST -> resolver",
+  },
+  {
+    label: "network loop",
+    code: "accept(client); route(room, payload);",
+  },
+  {
+    label: "api contract",
+    code: "POST /projects -> validate -> persist",
+  },
 ];
 
 const typingWords = [
@@ -79,7 +88,9 @@ export function Hero() {
   const metricOpacity = useTransform(progress, [0, 1], [1, 0.86]);
   const metricY = useTransform(progress, [0, 1], [0, 14]);
   const snippetOpacity = useTransform(progress, [0, 1], [1, 0.58]);
-  const snippetY = useTransform(progress, [0, 1], [0, 42]);
+  const topSnippetY = useTransform(progress, [0, 1], [14, 0]);
+  const middleSnippetY = useTransform(progress, [0, 1], [8, -4]);
+  const bottomSnippetY = useTransform(progress, [0, 1], [18, 2]);
   const snippetFilter = useTransform(
     progress,
     [0, 1],
@@ -113,8 +124,9 @@ export function Hero() {
 
           <h1 className="mt-7 text-balance font-display text-5xl font-semibold leading-[1.02] text-primary sm:text-6xl lg:text-7xl">
             {profile.name}
-            <span className="block bg-text-gradient bg-[length:220%_220%] bg-clip-text text-transparent animate-shimmer">
-              builds from first principles.
+            <span className="mt-2 block bg-text-gradient bg-[length:220%_220%] bg-clip-text text-4xl text-transparent animate-shimmer sm:text-5xl lg:text-6xl">
+              I build backend software
+              <span className="block">and keep learning how systems work.</span>
             </span>
           </h1>
 
@@ -186,17 +198,17 @@ export function Hero() {
 
           <motion.div
             style={{ opacity: metricOpacity, y: metricY }}
-            className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4"
+            className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:items-stretch"
           >
             {heroMetrics.map((metric) => (
               <div
                 key={metric.label}
-                className="rounded-lg border border-border-subtle bg-glass-bg p-4 backdrop-blur-xl"
+                className="flex min-h-[5.5rem] flex-col justify-center rounded-lg border border-border-subtle bg-glass-bg p-4 backdrop-blur-xl"
               >
-                <p className="font-display text-2xl font-semibold text-primary">
+                <p className="font-display text-2xl font-semibold leading-none text-primary">
                   {metric.value}
                 </p>
-                <p className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-secondary">
+                <p className="mt-2 min-h-[2rem] text-xs font-medium uppercase leading-snug tracking-[0.16em] text-secondary">
                   {metric.label}
                 </p>
               </div>
@@ -204,16 +216,29 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        <div className="relative min-h-[360px] lg:min-h-[560px]" aria-hidden>
+        <div
+          className="relative mx-auto grid min-h-[360px] w-full max-w-[36rem] grid-cols-3 grid-rows-3 items-center justify-items-center lg:min-h-[560px]"
+          aria-hidden
+        >
+          <HeroScene />
           {snippets.map((snippet, index) => (
             <motion.div
               key={snippet.label}
-              className="absolute hidden w-72 rounded-lg border border-border-subtle bg-glass-bg p-4 shadow-soft backdrop-blur-xl md:block"
+              className={
+                index === 0
+                  ? "hidden w-[17.5rem] rounded-lg border border-border-subtle bg-glass-bg p-4 shadow-soft backdrop-blur-xl md:block md:col-start-2 md:row-start-1"
+                  : index === 1
+                    ? "hidden w-[17.5rem] rounded-lg border border-border-subtle bg-glass-bg p-4 shadow-soft backdrop-blur-xl md:block md:col-start-3 md:row-start-2 md:justify-self-start"
+                    : "hidden w-[17.5rem] rounded-lg border border-border-subtle bg-glass-bg p-4 shadow-soft backdrop-blur-xl md:block md:col-start-2 md:row-start-3"
+              }
               style={{
-                left: index === 1 ? "38%" : index === 2 ? "18%" : "3%",
-                top: index === 1 ? "50%" : index === 2 ? "72%" : "16%",
                 opacity: snippetOpacity,
-                y: snippetY,
+                y:
+                  index === 0
+                    ? topSnippetY
+                    : index === 1
+                      ? middleSnippetY
+                      : bottomSnippetY,
                 filter: snippetFilter,
               }}
             >
@@ -230,7 +255,7 @@ export function Hero() {
               </code>
             </motion.div>
           ))}
-          <motion.div className="absolute bottom-6 right-4 hidden items-center gap-2 rounded-full border border-border-subtle bg-glass-bg px-4 py-2 text-xs text-secondary backdrop-blur-xl lg:flex">
+          <motion.div className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-border-subtle bg-glass-bg px-4 py-2 text-xs text-secondary backdrop-blur-xl lg:flex">
             <MousePointer2 className="size-3.5 text-electric" />
             Cursor glow enabled
           </motion.div>
