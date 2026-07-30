@@ -86,7 +86,9 @@ export function CommandPalette() {
   );
 
   const filteredActions = actions.filter((action) =>
-    `${action.label} ${action.helper}`.toLowerCase().includes(query.toLowerCase()),
+    `${action.label} ${action.helper}`
+      .toLowerCase()
+      .includes(query.toLowerCase()),
   );
 
   function runAction(action: CommandAction) {
@@ -106,23 +108,23 @@ export function CommandPalette() {
           onMouseDown={() => setIsOpen(false)}
         >
           <motion.div
-            className="gradient-border w-full max-w-2xl rounded-lg bg-zinc-950/90 p-2 shadow-soft"
+            className="gradient-border w-full max-w-2xl rounded-lg bg-glass-bg p-2 shadow-soft"
             initial={{ opacity: 0, y: 18, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ duration: 0.24 }}
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <div className="flex items-center gap-3 border-b border-white/10 px-3 py-3">
-              <Search className="size-5 text-zinc-500" />
+            <div className="flex items-center gap-3 border-b border-border-subtle px-3 py-3">
+              <Search className="size-5 text-secondary" />
               <input
                 autoFocus
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search sections, projects, links"
-                className="w-full bg-transparent text-sm text-white outline-none placeholder:text-zinc-600"
+                className="w-full bg-transparent text-sm text-primary outline-none placeholder:text-muted"
               />
-              <kbd className="rounded border border-white/10 bg-white/6 px-2 py-1 font-code text-[10px] text-zinc-500">
+              <kbd className="rounded border border-border-subtle bg-card px-2 py-1 font-code text-[10px] text-secondary">
                 ESC
               </kbd>
             </div>
@@ -132,21 +134,27 @@ export function CommandPalette() {
                 return (
                   <button
                     key={`${action.label}-${action.helper}`}
-                    className="group flex w-full items-center gap-3 rounded-md px-3 py-3 text-left transition hover:bg-white/8"
+                    className="group flex w-full items-center gap-3 rounded-md px-3 py-3 text-left transition hover:bg-hover-bg"
                     onClick={() => runAction(action)}
                   >
-                    <span className="grid size-9 shrink-0 place-items-center rounded-md border border-white/10 bg-white/6 text-zinc-400 group-hover:text-white">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-md border border-border-subtle bg-card text-secondary group-hover:text-primary">
                       <Icon className="size-4" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-sm font-medium text-white">{action.label}</span>
-                      <span className="mt-0.5 block truncate font-code text-xs text-zinc-500">{action.helper}</span>
+                      <span className="block text-sm font-medium text-primary">
+                        {action.label}
+                      </span>
+                      <span className="mt-0.5 block truncate font-code text-xs text-secondary">
+                        {action.helper}
+                      </span>
                     </span>
                   </button>
                 );
               })}
               {!filteredActions.length ? (
-                <div className="px-3 py-10 text-center text-sm text-zinc-500">No matching command</div>
+                <div className="px-3 py-10 text-center text-sm text-secondary">
+                  No matching command
+                </div>
               ) : null}
             </div>
           </motion.div>

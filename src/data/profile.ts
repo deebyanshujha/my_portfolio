@@ -33,7 +33,7 @@ import type {
 export const profile = {
   name: "Deebyanshu Jha",
   title: "Computer Science Undergraduate | Software Engineer Aspirant",
-  tagline: "Focused on fundamentals. Building systems from first principles.",
+  tagline: "Building reliable software through curiosity and consistency.",
   location: "Vellore, Tamil Nadu, India",
   email: "deebyanshujha@gmail.com",
   phone: "+91 7896511109",
@@ -43,9 +43,9 @@ export const profile = {
   resumeUrl: `${import.meta.env.BASE_URL}resume/Deebyanshu-Jha-Resume.pdf`,
   lambDocs: "https://deebyanshujha.github.io/docs-lamb/",
   summary:
-    "I am a Computer Science undergraduate at VIT Vellore specializing in Internet of Things. I enjoy building software from first principles, with interests in systems programming, backend development, compilers, networking, and data structures and algorithms. I have solved 700+ DSA problems and enjoy turning ideas into practical software through clean, scalable implementations.",
+    "Computer Science undergraduate passionate about backend engineering, operating systems, computer networks, compilers, and scalable software development. I enjoy solving challenging problems, exploring how software works under the hood, and designing clean, efficient, and maintainable applications.",
   recruiterNote:
-    "Recruiters will find a fundamentals-first engineer here: someone who can reason through low-level systems, build backend services with clean APIs, and stay patient with hard problems until the design becomes simple enough to trust.",
+    "A fundamentals-first engineer focused on clean architecture, resilient backend services, and a deep understanding of core computer science concepts.",
 };
 
 export const navItems = [
@@ -282,7 +282,7 @@ export const achievements: Achievement[] = [
   {
     title: "LeetCode Performance",
     category: "Competitive Programming",
-    date: "Current resume",
+    date: "Ongoing",
     description:
       "Ranked in the top 25% globally with a top 150,000 worldwide ranking.",
     details: [
@@ -293,7 +293,7 @@ export const achievements: Achievement[] = [
   {
     title: "CodeChef Rating Milestone",
     category: "Competitive Programming",
-    date: "Current resume",
+    date: "Ongoing",
     description:
       "Earned a 2-Star CodeChef profile through consistent contest and practice work.",
     details: [
@@ -323,6 +323,13 @@ export const achievements: Achievement[] = [
 ];
 
 export const certifications: Certification[] = [
+  {
+    title: "Complete Web Development Course",
+    issuer: "Udemy",
+    issued: "April 3, 2026",
+    credentialId: "UC-71c062f1-52a5-4865-842f-224928f672f8",
+    skills: ["Web Development"],
+  },
   {
     title: "SQL & Data Engineering Foundations",
     issuer: "takeUforward",

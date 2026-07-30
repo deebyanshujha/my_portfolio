@@ -16,15 +16,19 @@ export function Toaster() {
             initial={{ opacity: 0, y: 18, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 14, scale: 0.96 }}
-            className="gradient-border rounded-lg bg-zinc-950/85 p-4 shadow-soft backdrop-blur-xl"
+            className="gradient-border rounded-lg bg-glass-bg p-4 shadow-soft backdrop-blur-xl"
             role="status"
           >
             <div className="flex items-start gap-3">
               <div className="mt-1 size-2 rounded-full bg-mint shadow-[0_0_18px_rgba(52,211,153,0.7)]" />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-white">{toast.title}</p>
+                <p className="text-sm font-semibold text-primary">
+                  {toast.title}
+                </p>
                 {toast.description ? (
-                  <p className="mt-1 text-sm leading-6 text-zinc-400">{toast.description}</p>
+                  <p className="mt-1 text-sm leading-6 text-secondary">
+                    {toast.description}
+                  </p>
                 ) : null}
               </div>
               <Button
