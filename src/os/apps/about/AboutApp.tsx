@@ -1,8 +1,20 @@
 import { useState } from "react";
-import { education, focusAreas, heroMetrics, profile } from "../../../data/profile";
+import {
+  education,
+  focusAreas,
+  heroMetrics,
+  profile,
+} from "../../../data/profile";
 import type { AppProps } from "../../kernel/appRegistry";
 import { useAppCommand } from "../../kernel/appBus";
-import { AppFrame, AppScroll, Chip, Divider, ExternalAction, Label } from "../../shell/ApplicationShell";
+import {
+  AppFrame,
+  AppScroll,
+  Chip,
+  Divider,
+  ExternalAction,
+  Label,
+} from "../../shell/ApplicationShell";
 import { SystemMark } from "../../shell/AppGlyph";
 
 export default function AboutApp({ windowId }: AppProps) {
@@ -38,14 +50,13 @@ export default function AboutApp({ windowId }: AppProps) {
           />
           <div className="relative flex items-start gap-4">
             <div
-              className="grid h-14 w-14 shrink-0 place-items-center rounded-[13px] border"
+              className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-[13px]"
               style={{
-                borderColor: "var(--hair-strong)",
                 background: "rgba(255,255,255,0.04)",
                 color: "var(--ink)",
               }}
             >
-              <SystemMark size={30} />
+              <SystemMark size={54} />
             </div>
             <div className="min-w-0">
               <h2
@@ -54,7 +65,10 @@ export default function AboutApp({ windowId }: AppProps) {
               >
                 {profile.name}
               </h2>
-              <p className="mb-0 mt-1.5 text-[12.5px]" style={{ color: "var(--ink-2)" }}>
+              <p
+                className="mb-0 mt-1.5 text-[12.5px]"
+                style={{ color: "var(--ink-2)" }}
+              >
                 {profile.title}
               </p>
               <p className="meta mt-2" style={{ color: "var(--ink-4)" }}>
@@ -65,7 +79,11 @@ export default function AboutApp({ windowId }: AppProps) {
 
           <p
             className="font-editorial relative mb-0 mt-5 italic"
-            style={{ fontSize: "1.06rem", lineHeight: 1.5, color: "var(--ink)" }}
+            style={{
+              fontSize: "1.06rem",
+              lineHeight: 1.5,
+              color: "var(--ink)",
+            }}
           >
             {profile.tagline}
           </p>
@@ -74,10 +92,16 @@ export default function AboutApp({ windowId }: AppProps) {
         <Divider />
 
         <div className="px-6 py-5">
-          <p className="m-0 text-[13.5px] leading-[1.68]" style={{ color: "var(--ink-2)" }}>
+          <p
+            className="m-0 text-[13.5px] leading-[1.68]"
+            style={{ color: "var(--ink-2)" }}
+          >
             {profile.summary}
           </p>
-          <p className="mb-0 mt-3 text-[13px] leading-[1.65]" style={{ color: "var(--ink-3)" }}>
+          <p
+            className="mb-0 mt-3 text-[13px] leading-[1.65]"
+            style={{ color: "var(--ink-3)" }}
+          >
             {profile.recruiterNote}
           </p>
         </div>
@@ -90,7 +114,11 @@ export default function AboutApp({ windowId }: AppProps) {
           style={{ background: "var(--hair)" }}
         >
           {heroMetrics.map((m) => (
-            <div key={m.label} className="p-4" style={{ background: "rgba(14,15,19,0.55)" }}>
+            <div
+              key={m.label}
+              className="p-4"
+              style={{ background: "rgba(14,15,19,0.55)" }}
+            >
               <div
                 className="font-display text-[20px] font-bold leading-none"
                 style={{ letterSpacing: "-0.03em", color: "var(--ink)" }}
@@ -129,7 +157,10 @@ export default function AboutApp({ windowId }: AppProps) {
                   <div className="text-[13px]" style={{ color: "var(--ink)" }}>
                     {e.program}
                   </div>
-                  <div className="mt-0.5 text-[12px]" style={{ color: "var(--ink-3)" }}>
+                  <div
+                    className="mt-0.5 text-[12px]"
+                    style={{ color: "var(--ink-3)" }}
+                  >
                     {e.school} · {e.place}
                   </div>
                   <div className="meta mt-1" style={{ color: "var(--ink-4)" }}>

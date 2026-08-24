@@ -71,7 +71,10 @@ export function Machine() {
             "radial-gradient(closest-side, var(--accent-glow), transparent 72%)",
           filter: "blur(28px)",
         }}
-        animate={{ opacity: woken ? 1 : lit ? 0.85 : 0.4, scale: lit ? 1.06 : 1 }}
+        animate={{
+          opacity: woken ? 1 : lit ? 0.85 : 0.4,
+          scale: lit ? 1.06 : 1,
+        }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       />
 
@@ -202,13 +205,20 @@ export function Machine() {
               className="font-display text-[10px] font-bold"
               style={{ letterSpacing: "0.4em", color: "rgba(255,255,255,0.3)" }}
             >
-              DJ
+              <img
+                src={`${import.meta.env.BASE_URL}logo.png`}
+                alt="Deebyanshu Jha"
+                className="h-5 w-5 object-cover"
+              />
             </span>
           </div>
         </div>
 
         {/* ── stand ─────────────────────────────────────────────── */}
-        <div className="relative mx-auto" style={{ transformStyle: "preserve-3d" }}>
+        <div
+          className="relative mx-auto"
+          style={{ transformStyle: "preserve-3d" }}
+        >
           <div
             className="mx-auto h-[74px] w-[11%] min-w-[42px]"
             style={{
@@ -234,7 +244,8 @@ export function Machine() {
           aria-hidden
           className="mx-auto mt-1 h-6 w-[46%] rounded-[50%]"
           style={{
-            background: "radial-gradient(closest-side, rgba(0,0,0,0.75), transparent)",
+            background:
+              "radial-gradient(closest-side, rgba(0,0,0,0.75), transparent)",
             filter: "blur(9px)",
           }}
         />

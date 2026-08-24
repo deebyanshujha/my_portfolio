@@ -1,14 +1,19 @@
-import { useRef } from "react";
-import { motion } from "motion/react";
+import { useCallback, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Machine } from "./Machine";
 import { Wordmark } from "./Wordmark";
 import { Background, Contact, Intro, Toolkit, Work } from "./Sections";
 import { RoomLight } from "./RoomLight";
 import { Console } from "./Console";
+import { GreetingIntro } from "./GreetingIntro";
 import { useStage } from "../os/stage/StageProvider";
 import { prefersStill, useSettings } from "../os/kernel/settingsStore";
 
-const META = ["Vellore, IN", "B.Tech CSE — IoT", "Compilers / Networks / Backend"];
+const META = [
+  "Vellore, IN",
+  "B.Tech CSE — IoT",
+  "Compilers / Networks / Backend",
+];
 
 const NAV = [
   { id: "about", label: "What I build" },
@@ -35,8 +40,10 @@ export function Landing() {
   const settings = useSettings();
   const still = prefersStill(settings);
   const pushing = stage !== "landing";
+  const [greeting, setGreeting] = useState(!still);
 
   const scroller = useRef<HTMLDivElement>(null);
+  const finishGreeting = useCallback(() => setGreeting(false), []);
 
   /**
    * The console's `boot` command, which has to arrive at exactly the same
@@ -82,7 +89,9 @@ export function Landing() {
         <RoomLight still={still} dimmed={pushing} />
         <div
           className="absolute inset-x-0 bottom-0 h-[46%]"
-          style={{ background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.5))" }}
+          style={{
+            background: "linear-gradient(180deg, transparent, rgba(0,0,0,0.5))",
+          }}
         />
       </div>
 
@@ -112,7 +121,10 @@ export function Landing() {
             </div>
 
             {/* section jumps — the page has somewhere to go now */}
-            <nav className="hidden items-center gap-5 md:flex" aria-label="Sections">
+            <nav
+              className="hidden items-center gap-5 md:flex"
+              aria-label="Sections"
+            >
               {NAV.map((item) => (
                 <button
                   key={item.id}
@@ -124,6 +136,21 @@ export function Landing() {
                 </button>
               ))}
             </nav>
+            <span
+              className="meta hidden items-center gap-1.5 md:inline-flex"
+              style={{ color: "var(--ink-4)" }}
+            >
+              <kbd
+                className="rounded border px-1.5 py-[1px] font-mono text-[11px] leading-[1.4]"
+                style={{
+                  borderColor: "var(--hair-strong)",
+                  color: "var(--ink-3)",
+                }}
+              >
+                `
+              </kbd>
+              for a console
+            </span>
             <span className="meta text-right md:hidden">Software Engineer</span>
           </motion.header>
 
@@ -131,10 +158,18 @@ export function Landing() {
           <div className="relative flex flex-1 flex-col items-center justify-center gap-[clamp(1.5rem,4vh,3rem)]">
             <motion.div
               className="relative"
-              initial={still ? { opacity: 0 } : { opacity: 0, y: 28, scale: 0.965 }}
-              animate={pushing ? dolly(0.9) : { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+              initial={
+                still ? { opacity: 0 } : { opacity: 0, y: 28, scale: 0.965 }
+              }
+              animate={
+                pushing
+                  ? dolly(0.9)
+                  : { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }
+              }
               transition={
-                pushing ? dollyT : { duration: 1.15, delay: 0.15, ease: [0.16, 1, 0.3, 1] }
+                pushing
+                  ? dollyT
+                  : { duration: 1.15, delay: 0.15, ease: [0.16, 1, 0.3, 1] }
               }
             >
               <Machine />
@@ -148,7 +183,11 @@ export function Landing() {
                 lineHeight: 1.35,
               }}
               initial={{ opacity: 0, y: 12 }}
-              animate={pushing ? dolly(0.55) : { opacity: 1, y: 0, filter: "blur(0px)" }}
+              animate={
+                pushing
+                  ? dolly(0.55)
+                  : { opacity: 1, y: 0, filter: "blur(0px)" }
+              }
               transition={pushing ? dollyT : { duration: 0.9, delay: 0.95 }}
             >
               A portfolio you have to switch on.
@@ -184,14 +223,20 @@ export function Landing() {
               >
                 <kbd
                   className="rounded border px-1.5 py-[1px] font-mono text-[11px] leading-[1.4]"
-                  style={{ borderColor: "var(--hair-strong)", color: "var(--ink-3)" }}
+                  style={{
+                    borderColor: "var(--hair-strong)",
+                    color: "var(--ink-3)",
+                  }}
                 >
                   `
                 </kbd>
                 for a console
               </span>
 
-              <span className="meta ml-auto" style={{ color: "var(--accent-dim)" }}>
+              <span
+                className="meta ml-auto"
+                style={{ color: "var(--accent-dim)" }}
+              >
                 ↑ Press the screen to enter · scroll for the work
               </span>
             </motion.div>
@@ -220,6 +265,9 @@ export function Landing() {
       </div>
 
       <Console still={still} onBoot={bootFromConsole} />
+      <AnimatePresence>
+        {greeting && <GreetingIntro onDone={finishGreeting} />}
+      </AnimatePresence>
     </div>
   );
 }

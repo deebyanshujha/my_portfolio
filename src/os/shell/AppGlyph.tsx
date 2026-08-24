@@ -44,7 +44,10 @@ export function AppGlyph({ id }: { id: AppId }) {
         <svg {...common}>
           <rect x="4.5" y="7" width="19" height="14" rx="2" />
           <circle cx="10.5" cy="13" r="2.4" />
-          <path d="M16 12h4M16 16h4M7 19c.6-1.6 2-2.4 3.5-2.4S13.4 17.4 14 19" opacity={0.7} />
+          <path
+            d="M16 12h4M16 16h4M7 19c.6-1.6 2-2.4 3.5-2.4S13.4 17.4 14 19"
+            opacity={0.7}
+          />
         </svg>
       );
     case "resume":
@@ -72,7 +75,10 @@ export function AppGlyph({ id }: { id: AppId }) {
           <circle cx="6.5" cy="18" r="2.2" />
           <circle cx="21.5" cy="18" r="2.2" />
           <circle cx="14" cy="14" r="1.6" opacity={0.7} />
-          <path d="M14 8.7v3.7M12.6 15.1 8.2 17M15.5 15.1 19.8 17M8.7 18h10.6" opacity={0.75} />
+          <path
+            d="M14 8.7v3.7M12.6 15.1 8.2 17M15.5 15.1 19.8 17M8.7 18h10.6"
+            opacity={0.75}
+          />
         </svg>
       );
     case "achievements":
@@ -85,7 +91,10 @@ export function AppGlyph({ id }: { id: AppId }) {
     case "music":
       return (
         <svg {...common}>
-          <path d="M8 18V8.5M13 21V6M18 18V8.5M23 15v-4M3 15v-4" opacity={0.9} />
+          <path
+            d="M8 18V8.5M13 21V6M18 18V8.5M23 15v-4M3 15v-4"
+            opacity={0.9}
+          />
         </svg>
       );
     case "calendar":
@@ -106,14 +115,63 @@ export function AppGlyph({ id }: { id: AppId }) {
           <path d="M4.2 11.2h19.6" opacity={0.55} />
           {/* date grid — three rows, thinning out the way a month does */}
           <g stroke="none" fill="currentColor">
-            <rect x="7.4" y="13.9" width="2.5" height="2.1" rx="0.7" fillOpacity={0.5} />
-            <rect x="12.1" y="13.9" width="2.5" height="2.1" rx="0.7" fillOpacity={0.5} />
-            <rect x="16.8" y="13.9" width="2.5" height="2.1" rx="0.7" fillOpacity={0.5} />
+            <rect
+              x="7.4"
+              y="13.9"
+              width="2.5"
+              height="2.1"
+              rx="0.7"
+              fillOpacity={0.5}
+            />
+            <rect
+              x="12.1"
+              y="13.9"
+              width="2.5"
+              height="2.1"
+              rx="0.7"
+              fillOpacity={0.5}
+            />
+            <rect
+              x="16.8"
+              y="13.9"
+              width="2.5"
+              height="2.1"
+              rx="0.7"
+              fillOpacity={0.5}
+            />
             {/* today */}
-            <rect x="7.4" y="17.7" width="2.5" height="2.1" rx="0.7" fillOpacity={0.95} />
-            <rect x="12.1" y="17.7" width="2.5" height="2.1" rx="0.7" fillOpacity={0.5} />
-            <rect x="16.8" y="17.7" width="2.5" height="2.1" rx="0.7" fillOpacity={0.28} />
-            <rect x="7.4" y="21.5" width="2.5" height="1.4" rx="0.7" fillOpacity={0.28} />
+            <rect
+              x="7.4"
+              y="17.7"
+              width="2.5"
+              height="2.1"
+              rx="0.7"
+              fillOpacity={0.95}
+            />
+            <rect
+              x="12.1"
+              y="17.7"
+              width="2.5"
+              height="2.1"
+              rx="0.7"
+              fillOpacity={0.5}
+            />
+            <rect
+              x="16.8"
+              y="17.7"
+              width="2.5"
+              height="2.1"
+              rx="0.7"
+              fillOpacity={0.28}
+            />
+            <rect
+              x="7.4"
+              y="21.5"
+              width="2.5"
+              height="1.4"
+              rx="0.7"
+              fillOpacity={0.28}
+            />
           </g>
         </svg>
       );
@@ -121,10 +179,20 @@ export function AppGlyph({ id }: { id: AppId }) {
       return (
         <svg {...common}>
           {/* the face, tinted so the dial reads as a solid object */}
-          <circle cx="14" cy="14.4" r="9.4" fill="currentColor" fillOpacity={0.14} />
+          <circle
+            cx="14"
+            cy="14.4"
+            r="9.4"
+            fill="currentColor"
+            fillOpacity={0.14}
+          />
           <circle cx="14" cy="14.4" r="9.4" />
           {/* light falling on the upper-left, the same direction as the tile */}
-          <path d="M7.9 7.6a9.4 9.4 0 0 0-2.9 5.4" opacity={0.75} strokeWidth={1.9} />
+          <path
+            d="M7.9 7.6a9.4 9.4 0 0 0-2.9 5.4"
+            opacity={0.75}
+            strokeWidth={1.9}
+          />
           {/* quarter marks only — twelve ticks turn to noise at dock size */}
           <g opacity={0.62}>
             <path d="M14 6.6v1.6M14 20.6v1.6M6.2 14.4h1.6M20.2 14.4h1.6" />
@@ -132,7 +200,13 @@ export function AppGlyph({ id }: { id: AppId }) {
           {/* hands at 10:10 — the pose a clock is most legible in */}
           <path d="M14 14.4 9.9 11.2" strokeWidth={1.8} />
           <path d="M14 14.4 18.7 10.3" strokeWidth={1.6} />
-          <circle cx="14" cy="14.4" r="1.15" fill="currentColor" stroke="none" />
+          <circle
+            cx="14"
+            cy="14.4"
+            r="1.15"
+            fill="currentColor"
+            stroke="none"
+          />
         </svg>
       );
     case "settings":
@@ -157,24 +231,13 @@ export function SystemMark({
   drawn?: boolean;
 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
-      <rect
-        x="1.2"
-        y="1.2"
-        width="37.6"
-        height="37.6"
-        rx="9"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        opacity={drawn ? 0.35 : 0.55}
-      />
-      <path
-        d="M11 11h5.6c4.2 0 6.9 2.8 6.9 7s-2.7 7-6.9 7H11V11Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <path d="M28.4 11v10.6c0 2.4-1.4 3.8-3.6 3.8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
+    <img
+      src={`${import.meta.env.BASE_URL}logo.png`}
+      alt="Deebyanshu Jha"
+      width={size}
+      height={size}
+      aria-hidden={drawn ? undefined : true}
+      className="rounded-[25%] object-cover"
+    />
   );
 }

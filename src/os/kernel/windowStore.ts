@@ -68,7 +68,9 @@ function placeRect(w: number, h: number, index: number): Rect {
   const offset = (index % 6) * 28;
   const x = Math.round((vp.w - width) / 2 + offset - 70);
   const y = Math.round(
-    MENUBAR_H + Math.max(16, (vp.h - MENUBAR_H - DOCK_RESERVE - height) / 2.4) + offset,
+    MENUBAR_H +
+      Math.max(16, (vp.h - MENUBAR_H - DOCK_RESERVE - height) / 2.4) +
+      offset,
   );
   return {
     x: Math.max(12, Math.min(x, vp.w - width - 12)),
@@ -144,17 +146,21 @@ export const windowStore = {
     const remaining = state.windows.filter((w) => w.id !== id);
     const nextFocus =
       state.focusedId === id
-        ? remaining
+        ? (remaining
             .filter((w) => !w.minimized)
-            .reduce<WindowState | null>((top, w) => (!top || w.z > top.z ? w : top), null)
-            ?.id ?? null
+            .reduce<WindowState | null>(
+              (top, w) => (!top || w.z > top.z ? w : top),
+              null,
+            )?.id ?? null)
         : state.focusedId;
     commit({ windows: remaining, focusedId: nextFocus });
     emitClosed([closing.appId]);
   },
 
   closeApp(appId: AppId) {
-    state.windows.filter((w) => w.appId === appId).forEach((w) => windowStore.close(w.id));
+    state.windows
+      .filter((w) => w.appId === appId)
+      .forEach((w) => windowStore.close(w.id));
   },
 
   focus(id: string) {
@@ -176,7 +182,9 @@ export const windowStore = {
       null,
     );
     commit({
-      windows: state.windows.map((w) => (w.id === id ? { ...w, minimized: true } : w)),
+      windows: state.windows.map((w) =>
+        w.id === id ? { ...w, minimized: true } : w,
+      ),
       focusedId: nextFocus?.id ?? null,
     });
   },
@@ -223,29 +231,50 @@ export const windowStore = {
 
   /** Cmd+` — cycle focus through non-minimized windows. */
   cycle() {
-    const open = state.windows.filter((w) => !w.minimized).sort((a, b) => a.z - b.z);
+    const open = state.windows
+      .filter((w) => !w.minimized)
+      .sort((a, b) => a.z - b.z);
     if (open.length < 2) return;
     windowStore.focus(open[0].id);
   },
 
-  /** Keep maximized windows glued to the viewport, un-maximized ones on-screen. */
+  /** Keep maximized windows glued to the viewport and arrange visible windows. */
   reflow() {
     const vp = viewport();
+    const visible = state.windows.filter((w) => !w.minimized && !w.maximized);
+    const columns = Math.max(1, Math.ceil(Math.sqrt(visible.length)));
+    const rows = Math.max(1, Math.ceil(visible.length / columns));
+    const gap = 14;
+    const left = 12;
+    const top = MENUBAR_H + 12;
+    const right = vp.w - 12;
+    const bottom = vp.h - DOCK_RESERVE - 12;
+    const cellWidth = Math.max(
+      180,
+      (right - left - gap * (columns - 1)) / columns,
+    );
+    const cellHeight = Math.max(140, (bottom - top - gap * (rows - 1)) / rows);
+    const positions = new Map(
+      visible
+        .map((win, index) => ({
+          id: win.id,
+          rect: {
+            x: Math.round(left + (index % columns) * (cellWidth + gap)),
+            y: Math.round(
+              top + Math.floor(index / columns) * (cellHeight + gap),
+            ),
+            w: Math.round(cellWidth),
+            h: Math.round(cellHeight),
+          },
+        }))
+        .map(({ id, rect }) => [id, rect] as const),
+    );
+
     commit({
       ...state,
       windows: state.windows.map((w) => {
         if (w.maximized) return { ...w, rect: maximizedRect() };
-        const width = Math.min(w.rect.w, vp.w - 24);
-        const height = Math.min(w.rect.h, vp.h - MENUBAR_H - 24);
-        return {
-          ...w,
-          rect: {
-            w: width,
-            h: height,
-            x: Math.max(12 - width + 80, Math.min(w.rect.x, vp.w - 80)),
-            y: Math.max(MENUBAR_H + 4, Math.min(w.rect.y, vp.h - 60)),
-          },
-        };
+        return { ...w, rect: positions.get(w.id) ?? w.rect };
       }),
     });
   },

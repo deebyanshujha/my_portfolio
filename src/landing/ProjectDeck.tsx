@@ -44,7 +44,7 @@ const LOCK = 560; // ms — no second transition can start inside this
 const GAP = 120; // ms — quiet gap that marks the end of a physical gesture
 const HELD = 1100; // ms — a gesture held this long is a deliberate second step
 const LIFT = 0.4; // point in the flight where the card crosses the others
-const BAND = 0.34; // how near the viewport centre the deck must sit to capture
+const BAND = 0.12; // capture only while the Projects deck is the active view
 
 /* ── the stack at rest ───────────────────────────────────────────
    Offsets are deliberately small. Each card behind shows about fifteen pixels
@@ -167,7 +167,8 @@ export function ProjectDeck({ still }: { still: boolean }) {
     (index: number) => {
       if (index === phaseRef.current) return;
       // one forward step, or anything else read as a step back
-      const dir: 1 | -1 = (index - phaseRef.current + COUNT) % COUNT === 1 ? 1 : -1;
+      const dir: 1 | -1 =
+        (index - phaseRef.current + COUNT) % COUNT === 1 ? 1 : -1;
       commit(index, dir);
     },
     [commit],
@@ -178,16 +179,8 @@ export function ProjectDeck({ still }: { still: boolean }) {
      wheel is actually turning. No scroll listener, no observer loop. */
   useEffect(() => {
     const scroller: HTMLElement | Window =
-      (document.querySelector("[data-landing-scroll]") as HTMLElement | null) ?? window;
-
-    const anchor = () => {
-      const deck = deckRef.current;
-      if (!deck) return;
-      const r = deck.getBoundingClientRect();
-      const drift = r.top + r.height / 2 - window.innerHeight / 2;
-      if (Math.abs(drift) < 28) return;
-      deck.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
-    };
+      (document.querySelector("[data-landing-scroll]") as HTMLElement | null) ??
+      window;
 
     const onWheel = (event: Event) => {
       const e = event as WheelEvent;
@@ -219,7 +212,6 @@ export function ProjectDeck({ still }: { still: boolean }) {
         armed.current = true;
         // entering from above owes three downs; entering from below, three ups
         travelRef.current = dir === 1 ? 0 : COUNT;
-        anchor();
       }
 
       const gap = now - lastWheel.current;
@@ -379,7 +371,9 @@ export function ProjectDeck({ still }: { still: boolean }) {
             }}
           >
             {String(phase + 1).padStart(2, "0")}
-            <span style={{ color: "var(--p-ink-4)" }}>/{String(COUNT).padStart(2, "0")}</span>
+            <span style={{ color: "var(--p-ink-4)" }}>
+              /{String(COUNT).padStart(2, "0")}
+            </span>
           </div>
         </div>
 
@@ -396,9 +390,14 @@ export function ProjectDeck({ still }: { still: boolean }) {
               // to the animator
               animate={{
                 width: i === phase ? 18 : 6,
-                backgroundColor: i === phase ? "#e05a24" : "rgba(22,24,29,0.16)",
+                backgroundColor:
+                  i === phase ? "#e05a24" : "rgba(22,24,29,0.16)",
               }}
-              transition={still ? { duration: 0.15 } : { duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+              transition={
+                still
+                  ? { duration: 0.15 }
+                  : { duration: 0.42, ease: [0.16, 1, 0.3, 1] }
+              }
             />
           ))}
         </div>
@@ -455,7 +454,6 @@ export function ProjectDeck({ still }: { still: boolean }) {
         // --card-h and the room the two cards behind need is set in index.css,
         // beside the rest of the paper's metrics. No touch-action here on
         // purpose — the touch handler decides ownership per swipe.
-
       >
         {/* the deck's label changes as it turns, but a changed label is not
             announced — this is what actually tells a screen reader that the
@@ -486,7 +484,8 @@ export function ProjectDeck({ still }: { still: boolean }) {
               initial={false}
               animate={{
                 ...(flying && move && !still ? flightTo(move.dir) : rest),
-                zIndex: flying && move ? (move.raised ? 44 : 12) : BASE_Z[depth],
+                zIndex:
+                  flying && move ? (move.raised ? 44 : 12) : BASE_Z[depth],
                 boxShadow: SHADOW[depth],
               }}
               transition={
@@ -528,7 +527,11 @@ export function ProjectDeck({ still }: { still: boolean }) {
                 }}
                 initial={false}
                 animate={{ opacity: depth === 0 ? 0 : 1 }}
-                transition={still ? { duration: 0.2 } : { duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                transition={
+                  still
+                    ? { duration: 0.2 }
+                    : { duration: 0.4, ease: [0.16, 1, 0.3, 1] }
+                }
               />
 
               {/* cards behind recede into the paper rather than turning
@@ -539,12 +542,19 @@ export function ProjectDeck({ still }: { still: boolean }) {
                 style={{ background: "var(--p-bg)" }}
                 initial={false}
                 animate={{ opacity: VEIL[depth] }}
-                transition={still ? { duration: 0.2 } : { duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                transition={
+                  still
+                    ? { duration: 0.2 }
+                    : { duration: 0.45, ease: [0.16, 1, 0.3, 1] }
+                }
               />
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-0"
-                style={{ boxShadow: "inset 0 0 0 1px var(--p-line)", borderRadius: 4 }}
+                style={{
+                  boxShadow: "inset 0 0 0 1px var(--p-line)",
+                  borderRadius: 4,
+                }}
               />
             </motion.article>
           );
@@ -558,7 +568,15 @@ export function ProjectDeck({ still }: { still: boolean }) {
    Every fact is read straight out of the project record. Editorial, not
    product: a rule, a number, a name set large, and the metadata kept quiet at
    the foot where a spec sheet keeps it. */
-function Card({ project, index, hero }: { project: Project; index: number; hero: boolean }) {
+function Card({
+  project,
+  index,
+  hero,
+}: {
+  project: Project;
+  index: number;
+  hero: boolean;
+}) {
   return (
     <div className="flex h-full flex-col p-[clamp(1.5rem,2.8vw,2.5rem)]">
       <div
