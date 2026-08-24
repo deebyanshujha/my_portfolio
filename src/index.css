@@ -2,192 +2,727 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────
+   DOS — design tokens
+   Concept: "the screen is the only light source."
+   The environment is monochrome graphite; every warm value in
+   the frame is light spilling out of the machine.
+   ───────────────────────────────────────────────────────────── */
+
 :root {
-  color-scheme: light;
+  /* ground */
+  --ground: #0a0a0b;
+  --ground-2: #121214;
+  --ground-3: #17171a;
 
-  --background: #fafafa;
-  --card: #ffffff;
-  --surface: #f4f4f5;
-  --canvas: #fafafa;
+  /* ink — warm off-white, never pure #fff */
+  --ink: #edeae4;
+  --ink-2: rgba(237, 234, 228, 0.7);
+  --ink-3: rgba(237, 234, 228, 0.5);
+  --ink-4: rgba(237, 234, 228, 0.33);
 
-  --primary-text: #09090b;
-  --secondary-text: #52525b;
-  --muted-text: #a1a1aa;
+  /* hairlines */
+  --hair: rgba(237, 234, 228, 0.11);
+  --hair-strong: rgba(237, 234, 228, 0.2);
 
-  --border-subtle: #e4e4e7;
-  --border-strong: #d4d4d8;
+  /* the one accent — phosphor amber */
+  --accent: #e8b84b;
+  --accent-dim: rgba(232, 184, 75, 0.5);
+  --accent-glow: rgba(232, 184, 75, 0.14);
+  --accent-ink: #16130a;
 
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  --hover-bg: rgba(0, 0, 0, 0.05);
-  --shadow-glow: 0 0 40px rgba(37, 99, 235, 0.12);
-  --shadow-violet: 0 0 44px rgba(124, 58, 237, 0.1);
-  --shadow-soft: 0 24px 80px rgba(15, 23, 42, 0.08);
-  --hero-grid:
-    linear-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+  /* desktop chrome */
+  --win-bg: rgba(20, 21, 26, 0.74);
+  --win-bg-solid: #14151a;
+  --win-border: rgba(237, 234, 228, 0.13);
+  --win-highlight: rgba(255, 255, 255, 0.07);
+  --chrome-bg: rgba(16, 17, 21, 0.72);
+  /* popovers sit above everything and must read as solid panels, not as a
+     tint over whatever happens to be behind them */
+  --popover-bg: rgba(15, 16, 20, 0.94);
+  --shadow-win: 0 32px 90px -20px rgba(0, 0, 0, 0.72),
+    0 8px 26px -10px rgba(0, 0, 0, 0.6);
+  --shadow-win-focus: 0 44px 120px -22px rgba(0, 0, 0, 0.82),
+    0 10px 30px -10px rgba(0, 0, 0, 0.7);
 
-  --brand-electric: #2563eb;
-  --brand-violet: #7c3aed;
-  --brand-mint: #059669;
-  --brand-amber: #d97706;
+  /* runtime-controlled */
+  --brightness: 1;
+  --blur: 24px;
+  --motion: 1;
 
-  --theme-bg: #fafafa;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* wallpaper (set by settingsStore) */
+  --wall-a: #101218;
+  --wall-b: #05060a;
+  --wall-c: rgba(232, 184, 75, 0.07);
 }
 
-.dark {
-  color-scheme: dark;
-
-  --background: #09090b;
-  --card: #18181b;
-  --surface: #111111;
-  --canvas: #09090b;
-
-  --primary-text: #ffffff;
-  --secondary-text: #a1a1aa;
-  --muted-text: #52525b;
-
-  --border-subtle: #27272a;
-  --border-strong: #3f3f46;
-
-  --glass-bg: rgba(24, 24, 27, 0.75);
-  --glass-border: rgba(255, 255, 255, 0.11);
-  --hover-bg: rgba(255, 255, 255, 0.1);
-  --shadow-glow: 0 0 40px rgba(59, 130, 246, 0.18);
-  --shadow-violet: 0 0 44px rgba(139, 92, 246, 0.16);
-  --shadow-soft: 0 24px 80px rgba(9, 9, 11, 0.42);
-  --hero-grid:
-    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-
-  --brand-electric: #3b82f6;
-  --brand-violet: #8b5cf6;
-  --brand-mint: #34d399;
-  --brand-amber: #f59e0b;
-
-  --theme-bg: #09090b;
+/* accent variants offered in Settings */
+:root[data-accent="phosphor"] {
+  --accent: #e8b84b;
+  --accent-dim: rgba(232, 184, 75, 0.5);
+  --accent-glow: rgba(232, 184, 75, 0.14);
+  --accent-ink: #16130a;
+}
+:root[data-accent="signal"] {
+  --accent: #5fd3b8;
+  --accent-dim: rgba(95, 211, 184, 0.5);
+  --accent-glow: rgba(95, 211, 184, 0.13);
+  --accent-ink: #06140f;
+}
+:root[data-accent="ember"] {
+  --accent: #e2775a;
+  --accent-dim: rgba(226, 119, 90, 0.5);
+  --accent-glow: rgba(226, 119, 90, 0.13);
+  --accent-ink: #170a06;
 }
 
-* {
-  box-sizing: border-box;
+/* effects kill-switch — a real perf toggle, not decoration */
+:root[data-effects="off"] {
+  --blur: 0px;
+  --win-bg: #14151a;
+  --chrome-bg: #101115;
+  --popover-bg: #0f1014;
 }
 
-html {
-  scroll-behavior: smooth;
-  background: var(--theme-bg);
+@layer base {
+  * {
+    border-color: var(--hair);
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Inter Tight", system-ui, sans-serif;
+    font-feature-settings: "cv05" 1, "ss01" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+  }
 }
 
-body {
-  min-width: 320px;
-  min-height: 100vh;
-  margin: 0;
-  overflow-x: hidden;
-  background:
-    radial-gradient(
-      circle at 12% 18%,
-      rgba(59, 130, 246, 0.16),
-      transparent 27%
-    ),
-    radial-gradient(
-      circle at 82% 8%,
-      rgba(139, 92, 246, 0.16),
-      transparent 24%
-    ),
-    radial-gradient(
-      circle at 48% 68%,
-      rgba(52, 211, 153, 0.08),
-      transparent 28%
-    ),
-    var(--theme-bg);
-  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-}
+@layer components {
+  /* 10px uppercase mono — the "spec sheet" voice used throughout */
+  .meta {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
 
-body::before {
-  pointer-events: none;
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  opacity: 0.12;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.45'/%3E%3C/svg%3E");
-}
+  .hairline {
+    background: var(--hair);
+  }
 
-#root {
-  position: relative;
-  z-index: 1;
-}
+  /* film grain — one shared fixed layer, never per-element */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  /* native range inputs, restyled to match the system */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 999px;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-track {
+    background: transparent;
+  }
 
-button,
-input,
-textarea {
-  font: inherit;
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--hair-strong) transparent;
+  }
+  .scroll-thin::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background-color: var(--hair-strong);
+  }
+  .scroll-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(237, 234, 228, 0.32);
+  }
+  .scroll-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .glass {
+    background: var(--win-bg);
+    backdrop-filter: blur(var(--blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(150%);
   }
 
-  .glass-panel {
-    border: 1px solid var(--glass-border);
-    background: var(--glass-bg);
-    box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(18px);
+  .popover {
+    background: var(--popover-bg);
+    backdrop-filter: blur(var(--blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(160%);
   }
 
-  .gradient-border {
-    position: relative;
+  .chrome {
+    background: var(--chrome-bg);
+    backdrop-filter: blur(var(--blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(160%);
   }
 
-  .gradient-border::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    padding: 1px;
-    border-radius: inherit;
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.64),
-      rgba(139, 92, 246, 0.5),
-      rgba(52, 211, 153, 0.35)
-    );
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
+  .no-drag {
+    -webkit-user-drag: none;
+    user-select: none;
   }
+}
 
-  .section-pad {
-    padding-block: clamp(3rem, 5vw, 5rem);
+/* motion intensity: "off" from Settings, or OS-level reduced motion */
+:root[data-motion="off"] *,
+:root[data-motion="off"] *::before,
+:root[data-motion="off"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) *,
+  :root:not([data-motion="full"]) *::before,
+  :root:not([data-motion="full"]) *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
 
-  .font-display {
-    font-family: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+/* ─────────────────────────────────────────────────────────────
+   The miniature system running inside the machine.
+
+   Everything here is CSS: no JS animation loop, no per-frame DOM
+   churn. The "tear" layers are exact static copies of the UI that
+   sit at zero offset and zero opacity until a keyframe displaces a
+   clipped band of them for two or three frames — that is what makes
+   the fault read as a real frame tear rather than a filter.
+   ───────────────────────────────────────────────────────────── */
+
+.dos-mini {
+  container-type: inline-size;
+  /* one dial: hover shortens every cycle at once */
+  --rate: 1;
+}
+.dos-mini[data-lit="true"] {
+  --rate: 0.66;
+}
+
+.dos-mini-ui {
+  font-size: 11px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+@supports (width: 1cqw) {
+  .dos-mini-ui {
+    font-size: 2.05cqw;
   }
+}
 
-  .font-code {
-    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+/* on a small machine the fragments have to be fewer and larger, or they
+   collapse into texture */
+@container (max-width: 380px) {
+  .dos-mini-ui {
+    font-size: 2.7cqw;
+  }
+  .dos-mini-hide-sm {
+    display: none;
+  }
+}
+
+/* whole-frame displacement, rare and small */
+.dos-mini-jitter {
+  animation: dos-jitter calc(13s * var(--rate)) steps(1, end) infinite;
+}
+@keyframes dos-jitter {
+  0%,
+  61.5% {
+    transform: translate3d(0, 0, 0);
+  }
+  62% {
+    transform: translate3d(-0.35%, 0, 0);
+  }
+  62.6% {
+    transform: translate3d(0.22%, 0, 0);
+  }
+  63.2%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* clipped copies of the UI — the actual tearing */
+.dos-mini-tear {
+  background: #08070a;
+  will-change: transform, opacity;
+}
+.dos-mini-tear-a {
+  clip-path: inset(25.5% 0 68% 0);
+  animation: dos-tear-a calc(9.2s * var(--rate)) steps(1, end) infinite;
+}
+.dos-mini-tear-b {
+  clip-path: inset(57% 0 39.5% 0);
+  animation: dos-tear-b calc(6.6s * var(--rate)) steps(1, end) infinite;
+}
+@keyframes dos-tear-a {
+  0%,
+  45.8% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  46% {
+    opacity: 1;
+    transform: translate3d(-1.6%, 0, 0);
+  }
+  46.9% {
+    opacity: 1;
+    transform: translate3d(0.9%, 0, 0);
+  }
+  47.7% {
+    opacity: 1;
+    transform: translate3d(-0.3%, 0, 0);
+  }
+  48.4%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes dos-tear-b {
+  0%,
+  77.4% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  77.6% {
+    opacity: 1;
+    transform: translate3d(1.1%, 0, 0);
+  }
+  78.5%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* a single bright line crossing the tube */
+.dos-mini-sweep {
+  animation: dos-sweep calc(7.5s * var(--rate)) linear infinite;
+  will-change: transform, opacity;
+}
+@keyframes dos-sweep {
+  0% {
+    transform: translate3d(0, -160%, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.5;
+  }
+  52% {
+    opacity: 0.42;
+  }
+  62% {
+    transform: translate3d(0, 700%, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(0, 700%, 0);
+    opacity: 0;
+  }
+}
+
+/* slow luminance roll, the way an unlocked tube breathes */
+.dos-mini-roll {
+  animation: dos-roll calc(15s * var(--rate)) linear infinite;
+}
+@keyframes dos-roll {
+  0% {
+    transform: translate3d(0, -60%, 0);
+  }
+  100% {
+    transform: translate3d(0, 260%, 0);
+  }
+}
+
+/* one UI element dropping out and coming back */
+.dos-mini-flicker {
+  animation: dos-flicker calc(5.3s * var(--rate)) steps(1, end) infinite;
+}
+.dos-mini-flicker-2 {
+  animation: dos-flicker calc(8.1s * var(--rate)) steps(1, end) infinite;
+  animation-delay: -2.4s;
+}
+@keyframes dos-flicker {
+  0%,
+  70.5% {
+    opacity: 1;
+  }
+  71% {
+    opacity: 0.08;
+  }
+  71.8% {
+    opacity: 1;
+  }
+  72.4% {
+    opacity: 0.22;
+  }
+  73.2%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* amber phosphor ghost trailing the title */
+.dos-mini-ghost {
+  animation: dos-ghost calc(6.9s * var(--rate)) steps(1, end) infinite;
+}
+@keyframes dos-ghost {
+  0%,
+  33.4% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  33.8% {
+    opacity: 0.55;
+    transform: translate3d(0.5%, 0, 0);
+  }
+  34.6%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* the boot figure: bar and read-out step in lockstep */
+.dos-mini-bar {
+  transform-origin: 0 50%;
+  animation: dos-bar calc(11s * var(--rate)) steps(1, end) infinite;
+}
+.dos-mini[data-lit="true"] .dos-mini-bar {
+  animation-name: dos-bar-lit;
+}
+@keyframes dos-bar {
+  0% {
+    transform: scaleX(0.34);
+  }
+  25% {
+    transform: scaleX(0.41);
+  }
+  50% {
+    transform: scaleX(0.58);
+  }
+  75% {
+    transform: scaleX(0.62);
+  }
+  100% {
+    transform: scaleX(0.34);
+  }
+}
+@keyframes dos-bar-lit {
+  0% {
+    transform: scaleX(0.67);
+  }
+  25% {
+    transform: scaleX(0.79);
+  }
+  50% {
+    transform: scaleX(0.84);
+  }
+  75% {
+    transform: scaleX(0.91);
+  }
+  100% {
+    transform: scaleX(0.67);
+  }
+}
+.dos-mini-pct {
+  animation: dos-pct calc(11s * var(--rate)) steps(1, end) infinite;
+}
+.dos-mini[data-lit="true"] .dos-mini-pct {
+  animation-name: dos-pct-lit;
+}
+/* eight read-outs stacked; one line is 12.5% of the strip */
+@keyframes dos-pct {
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-12.5%);
+  }
+  50% {
+    transform: translateY(-25%);
+  }
+  75% {
+    transform: translateY(-37.5%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes dos-pct-lit {
+  0% {
+    transform: translateY(-50%);
+  }
+  25% {
+    transform: translateY(-62.5%);
+  }
+  50% {
+    transform: translateY(-75%);
+  }
+  75% {
+    transform: translateY(-87.5%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+/* the caret in the status rail */
+.dos-mini-caret {
+  animation: dos-caret 1.1s steps(1, end) infinite;
+}
+@keyframes dos-caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* woken / reduced motion: the system settles */
+.dos-mini[data-still="true"] *,
+.dos-mini[data-woken="true"] * {
+  animation: none !important;
+}
+.dos-mini[data-still="true"] .dos-mini-tear,
+.dos-mini[data-woken="true"] .dos-mini-tear {
+  opacity: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   The landing page's own palette.
+
+   Scoped, not global: the desktop keeps its graphite identity and
+   the landing gets a warmer, brighter one. The hero stays dark
+   because the machine has to be the only light source in the room
+   — everything below it is paper, so scrolling reads as stepping
+   out of the room and into the work.
+   ───────────────────────────────────────────────────────────── */
+
+.paper {
+  /* ground */
+  --p-bg: #f6f3ed;
+  --p-bg-2: #fffdf9;
+  --p-card: #ffffff;
+
+  /* ink */
+  --p-ink: #16181d;
+  --p-ink-2: rgba(22, 24, 29, 0.68);
+  --p-ink-3: rgba(22, 24, 29, 0.46);
+  --p-ink-4: rgba(22, 24, 29, 0.32);
+
+  /* rules */
+  --p-line: rgba(22, 24, 29, 0.13);
+  --p-line-2: rgba(22, 24, 29, 0.08);
+
+  /* the one warm accent, and a cool counterweight used sparingly */
+  --p-accent: #e05a24;
+  --p-accent-soft: rgba(224, 90, 36, 0.1);
+  --p-cool: #1d63d1;
+
+  background: var(--p-bg);
+  color: var(--p-ink);
+}
+
+/* section numbers, set as a hanging marginal like a printed spec */
+.paper .rule-number {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--p-accent);
+}
+
+.paper .p-meta {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--p-ink-3);
+}
+
+/* project cards: lift and warm on approach rather than just changing colour */
+.paper .card {
+  background: var(--p-card);
+  border: 1px solid var(--p-line-2);
+  box-shadow: 0 1px 2px rgba(22, 24, 29, 0.04);
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s ease;
+}
+.paper .card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(224, 90, 36, 0.32);
+  box-shadow:
+    0 18px 40px -18px rgba(22, 24, 29, 0.24),
+    0 2px 6px rgba(22, 24, 29, 0.05);
+}
+
+/* an underline that draws itself under a link on approach */
+.paper .pull {
+  background-image: linear-gradient(var(--p-accent), var(--p-accent));
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.paper .pull:hover,
+.paper .pull:focus-visible {
+  background-size: 100% 1.5px;
+}
+
+/* the project deck: one card, plus the room the two behind it need to show an
+   edge each. Narrow screens set the same card taller rather than shorter — the
+   text reflows into more lines, and a card that clips its own spec is worse
+   than a card that is tall. */
+.paper .deck {
+  --card-h: clamp(410px, 57vh, 496px);
+  height: calc(var(--card-h) + 86px);
+}
+
+@media (max-width: 640px) {
+  .paper .deck {
+    --card-h: 548px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   The name is alive.
+
+   A slow, tiny drift per character. It is a CSS animation rather
+   than anything scheduled, so it costs one composited layer and
+   no main-thread work at all — and it sits on its own element,
+   below the cursor-driven spring, so the two never fight over
+   the same transform.
+   ───────────────────────────────────────────────────────────── */
+.dos-letter {
+  animation: dos-letter-drift 7.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* every third letter leans the other way, so the line breathes
+   rather than marching */
+.dos-letter:nth-child(3n) {
+  animation-duration: 9.1s;
+  animation-direction: alternate-reverse;
+}
+.dos-letter:nth-child(4n) {
+  animation-duration: 8.3s;
+}
+
+@keyframes dos-letter-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  35% {
+    transform: translate3d(0, -0.018em, 0) rotate(-0.22deg);
+  }
+  70% {
+    transform: translate3d(0, 0.014em, 0) rotate(0.18deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+  .dos-letter {
+    animation: none;
+  }
+}
+
+/* the search's own spinner: one ring, sized to sit inside a text field */
+.dos-spin {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  border: 1.5px solid var(--hair-strong);
+  border-top-color: var(--accent);
+  animation: dos-spin 0.7s linear infinite;
+}
+
+@keyframes dos-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dos-spin {
+    animation-duration: 2.4s;
   }
 }

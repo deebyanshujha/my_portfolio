@@ -1,25 +1,3 @@
-import {
-  Award,
-  BadgeCheck,
-  Binary,
-  BookOpen,
-  Brain,
-  Braces,
-  Code2,
-  Cpu,
-  Database,
-  Github,
-  Globe2,
-  GraduationCap,
-  Layers3,
-  Linkedin,
-  Network,
-  Server,
-  ShieldCheck,
-  Terminal,
-  Trophy,
-  Wrench,
-} from "lucide-react";
 import type {
   Achievement,
   Certification,
@@ -48,18 +26,6 @@ export const profile = {
     "A fundamentals-first engineer focused on clean architecture, resilient backend services, and a deep understanding of core computer science concepts.",
 };
 
-export const navItems = [
-  { label: "About", href: "#about" },
-  { label: "Education", href: "#education" },
-  { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "Achievements", href: "#achievements" },
-  { label: "GitHub", href: "#github" },
-  { label: "Coding", href: "#coding" },
-  { label: "Resume", href: "#resume" },
-  { label: "Contact", href: "#contact" },
-] as const;
-
 export const heroMetrics: Metric[] = [
   {
     label: "DSA problems solved",
@@ -74,7 +40,7 @@ export const heroMetrics: Metric[] = [
   },
   {
     label: "Certifications",
-    value: "5",
+    value: "6",
     helper: "DSA, OOP, SQL, Python, problem solving",
   },
 ];
@@ -106,13 +72,11 @@ export const education: EducationItem[] = [
 export const skillGroups: SkillGroup[] = [
   {
     title: "Programming Languages",
-    icon: Code2,
     accent: "blue",
     skills: ["C++", "Java", "C", "JavaScript", "Python", "Bash"],
   },
   {
     title: "Backend",
-    icon: Server,
     accent: "violet",
     skills: [
       "Node.js",
@@ -124,25 +88,21 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     title: "Frontend",
-    icon: Layers3,
     accent: "mint",
     skills: ["React", "HTML", "CSS", "Responsive interfaces"],
   },
   {
     title: "Databases",
-    icon: Database,
     accent: "amber",
     skills: ["MongoDB", "MySQL", "Schema design", "Data modeling"],
   },
   {
     title: "Tools",
-    icon: Wrench,
     accent: "blue",
     skills: ["Git", "GitHub", "Postman", "VS Code", "Linux/Bash"],
   },
   {
     title: "Systems",
-    icon: Cpu,
     accent: "violet",
     skills: [
       "Operating Systems",
@@ -154,7 +114,6 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     title: "Core CS",
-    icon: Brain,
     accent: "mint",
     skills: ["Data Structures", "Algorithms", "DBMS", "OOP", "Problem solving"],
   },
@@ -371,7 +330,6 @@ export const codingProfiles: CodingProfile[] = [
   {
     platform: "GitHub",
     href: "https://github.com/deebyanshujha",
-    icon: Github,
     stats: [
       { label: "Username", value: "deebyanshujha" },
       { label: "Focus", value: "Compilers, networking, full-stack" },
@@ -380,7 +338,6 @@ export const codingProfiles: CodingProfile[] = [
   {
     platform: "LeetCode",
     href: "https://leetcode.com/u/deebyanshujha/",
-    icon: Trophy,
     stats: [
       { label: "Standing", value: "Top 25%" },
       { label: "Global rank", value: "Top 150,000" },
@@ -389,19 +346,16 @@ export const codingProfiles: CodingProfile[] = [
   {
     platform: "CodeChef",
     href: "https://www.codechef.com/users/deebyanshujha",
-    icon: BadgeCheck,
     stats: [{ label: "Rating band", value: "2-Star Coder" }],
   },
   {
     platform: "GeeksforGeeks",
     href: "https://www.geeksforgeeks.org/profile/deebyanshu_jha?tab=activity",
-    icon: BookOpen,
     stats: [{ label: "Activity", value: "DSA practice profile" }],
   },
   {
     platform: "HackerRank",
     href: "https://www.hackerrank.com/profile/jhadeebyanshu",
-    icon: Award,
     stats: [
       { label: "Certified", value: "Problem Solving" },
       { label: "Certified", value: "Python" },
@@ -410,24 +364,23 @@ export const codingProfiles: CodingProfile[] = [
   {
     platform: "Codolio",
     href: "https://codolio.com/profile/deebyanshujha",
-    icon: Globe2,
     stats: [{ label: "Profile", value: "Coding activity hub" }],
   },
 ];
 
 export const focusAreas = [
-  { label: "Backend", icon: Server },
-  { label: "Systems", icon: Cpu },
-  { label: "Compilers", icon: Binary },
-  { label: "Algorithms", icon: Braces },
-  { label: "Operating Systems", icon: Terminal },
-  { label: "Networking", icon: Network },
-  { label: "Security-minded APIs", icon: ShieldCheck },
-  { label: "Academic depth", icon: GraduationCap },
+  { label: "Backend" },
+  { label: "Systems" },
+  { label: "Compilers" },
+  { label: "Algorithms" },
+  { label: "Operating Systems" },
+  { label: "Networking" },
+  { label: "Security-minded APIs" },
+  { label: "Academic depth" },
 ];
 
 export const socialLinks = [
-  { label: "GitHub", href: profile.github, icon: Github },
-  { label: "LinkedIn", href: profile.linkedin, icon: Linkedin },
-  { label: "Email", href: `mailto:${profile.email}`, icon: Globe2 },
+  { label: "GitHub", href: profile.github },
+  { label: "LinkedIn", href: profile.linkedin },
+  { label: "Email", href: `mailto:${profile.email}` },
 ];

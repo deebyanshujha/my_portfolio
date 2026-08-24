@@ -1,67 +1,51 @@
 import type { Config } from "tailwindcss";
 
-const config = {
-  darkMode: ["class"],
+const config: Config = {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        card: "var(--card)",
-        surface: "var(--surface)",
-        canvas: "var(--canvas)",
-        primary: "var(--primary-text)",
-        secondary: "var(--secondary-text)",
-        muted: "var(--muted-text)",
-        "border-subtle": "var(--border-subtle)",
-        "border-strong": "var(--border-strong)",
-        "glass-bg": "var(--glass-bg)",
-        "glass-border": "var(--glass-border)",
-        "hover-bg": "var(--hover-bg)",
-        electric: "var(--brand-electric)",
-        violet: "var(--brand-violet)",
-        mint: "var(--brand-mint)",
-        amberline: "var(--brand-amber)",
+        ground: "var(--ground)",
+        "ground-2": "var(--ground-2)",
+        ink: "var(--ink)",
+        "ink-2": "var(--ink-2)",
+        "ink-3": "var(--ink-3)",
+        hair: "var(--hair)",
+        "hair-strong": "var(--hair-strong)",
+        accent: "var(--accent)",
+        "accent-dim": "var(--accent-dim)",
+        win: "var(--win-bg)",
+        "win-border": "var(--win-border)",
+        chrome: "var(--chrome-bg)",
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-        display: [
-          "Space Grotesk",
-          "Inter",
-          "ui-sans-serif",
-          "system-ui",
-          "sans-serif",
-        ],
-        mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "monospace"],
+        display: ["Archivo", "system-ui", "sans-serif"],
+        editorial: ["Instrument Serif", "Georgia", "serif"],
+        ui: ["Inter Tight", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
-      boxShadow: {
-        glow: "var(--shadow-glow)",
-        violet: "var(--shadow-violet)",
-        soft: "var(--shadow-soft)",
+      letterSpacing: {
+        tightest: "-0.055em",
+        meta: "0.14em",
       },
-      backgroundImage: {
-        "hero-grid": "var(--hero-grid)",
-        "text-gradient":
-          "linear-gradient(135deg, #FFFFFF 0%, #C4B5FD 42%, #93C5FD 72%, #D9F99D 100%)",
+      borderRadius: {
+        win: "12px",
       },
-      keyframes: {
-        shimmer: {
-          "0%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" },
-          "100%": { backgroundPosition: "0% 50%" },
-        },
-        scan: {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(100%)" },
-        },
+      transitionTimingFunction: {
+        cine: "cubic-bezier(0.76, 0, 0.24, 1)",
+        out: "cubic-bezier(0.16, 1, 0.3, 1)",
       },
-      animation: {
-        shimmer: "shimmer 9s ease infinite",
-        scan: "scan 5s linear infinite",
+      zIndex: {
+        desktop: "10",
+        windows: "100",
+        dock: "900",
+        menubar: "1000",
+        overlay: "1100",
+        boot: "1200",
       },
     },
   },
   plugins: [],
-} satisfies Config;
+};
 
 export default config;

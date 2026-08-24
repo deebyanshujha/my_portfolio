@@ -8,24 +8,17 @@
     "build": "tsc -b && vite build",
     "postbuild": "node scripts/create-spa-fallback.mjs",
     "preview": "vite preview",
-    "lint": "tsc --noEmit",
+    "lint": "tsc -b",
+    "verify:app": "node scripts/verify-app.mjs",
+    "verify:deck": "node scripts/verify-deck.mjs",
     "verify:hero": "node scripts/verify-hero.mjs",
-    "verify:app": "node scripts/verify-app.mjs"
+    "verify:landing": "node scripts/verify-landing.mjs",
+    "verify:signal": "node scripts/verify-signal.mjs"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.1.1",
-    "@react-three/drei": "^9.122.0",
-    "@react-three/fiber": "^8.17.10",
-    "@types/react-router-dom": "5.3.3",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.468.0",
     "motion": "^12.4.2",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "5.3.4",
-    "tailwind-merge": "^2.6.0",
-    "three": "^0.171.0"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",

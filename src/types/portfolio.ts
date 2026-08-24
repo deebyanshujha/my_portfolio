@@ -1,5 +1,3 @@
-import type { LucideIcon } from "lucide-react";
-
 export type ExternalLink = {
   label: string;
   href: string;
@@ -21,7 +19,6 @@ export type EducationItem = {
 
 export type SkillGroup = {
   title: string;
-  icon: LucideIcon;
   accent: "blue" | "violet" | "mint" | "amber";
   skills: string[];
 };
@@ -38,6 +35,7 @@ export type Project = {
   features: string[];
   challenges: string[];
   impact: string;
+  /** a few real lines from the project, used as its source-file preview */
   artifact: string[];
 };
 
@@ -60,6 +58,5 @@ export type Certification = {
 export type CodingProfile = {
   platform: string;
   href: string;
-  icon: LucideIcon;
   stats: Metric[];
 };
