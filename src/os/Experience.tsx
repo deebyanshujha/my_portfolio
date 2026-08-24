@@ -1,35 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Landing } from "../landing/Landing";
 import { Desktop } from "./shell/Desktop";
-import { MobileShell } from "./shell/mobile/MobileShell";
 import { ScreenPortal } from "./stage/ScreenPortal";
 import { useStage } from "./stage/StageProvider";
-import { applySettings, settingsStore, useSettings } from "./kernel/settingsStore";
+import {
+  applySettings,
+  settingsStore,
+  useSettings,
+} from "./kernel/settingsStore";
 import { audio } from "./kernel/audio";
 import { musicStore } from "./kernel/musicStore";
-
-/** Below this width the desktop metaphor is replaced rather than squeezed. */
-const DESKTOP_MIN = 900;
-
-function useIsCompact(): boolean {
-  const [compact, setCompact] = useState(
-    () => typeof window !== "undefined" && window.innerWidth < DESKTOP_MIN,
-  );
-  useEffect(() => {
-    const mq = window.matchMedia(`(max-width: ${DESKTOP_MIN - 1}px)`);
-    const onChange = () => setCompact(mq.matches);
-    onChange();
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return compact;
-}
 
 export function Experience() {
   const { stage } = useStage();
   const settings = useSettings();
-  const compact = useIsCompact();
 
   // push persisted settings into CSS variables before first paint of the shell
   useEffect(() => {
@@ -66,7 +51,7 @@ export function Experience() {
         )}
       </AnimatePresence>
 
-      {inside && (compact ? <MobileShell /> : <Desktop />)}
+      {inside && <Desktop />}
 
       <ScreenPortal />
 
