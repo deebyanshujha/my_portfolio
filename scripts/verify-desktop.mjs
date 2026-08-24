@@ -228,7 +228,13 @@ export async function auditMusic(page, t) {
   await closeAll(page);
 }
 
-/** The personal photograph is a first-class wallpaper, and reverts cleanly. */
+/**
+ * Wallpapers.
+ *
+ * Every wallpaper is a photograph, and each is only offered once its file has
+ * actually loaded — so this checks that a card appears at all, that choosing it
+ * puts a real, fetchable image behind the UI, and that the default comes back.
+ */
 export async function auditWallpaper(page, t) {
   const { check, shot, dock, closeAll } = t;
 
@@ -237,7 +243,7 @@ export async function auditWallpaper(page, t) {
   await page.waitForTimeout(850);
   const card = page.getByRole("button", { name: /Hachi-Roku/ });
   const present = (await card.count()) > 0;
-  check("the personal wallpaper is offered once its asset loads", present);
+  check("a wallpaper is offered once its asset loads", present);
   if (!present) return;
 
   await card.click();
@@ -260,11 +266,11 @@ export async function auditWallpaper(page, t) {
   );
   await shot(page, "19-wallpaper-personal");
 
-  await page.getByRole("button", { name: /Strata/ }).click();
+  await page.getByRole("button", { name: /Captain/ }).click();
   await page.waitForTimeout(650);
   check(
-    "and switches back",
-    (await page.evaluate(() => document.documentElement.dataset.wallpaper)) === "strata",
+    "and switches back to the default",
+    (await page.evaluate(() => document.documentElement.dataset.wallpaper)) === "steveg",
   );
   await closeAll(page);
 }

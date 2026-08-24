@@ -1,13 +1,14 @@
 import { useSyncExternalStore } from "react";
 
-export type WallpaperId = "strata" | "aperture" | "meridian" | "carbon" | "personal";
+export type WallpaperId =
+  | "steveg"
+  | "anfield"
+  | "zoro"
+  | "interstellar"
+  | "summit"
+  | "kohli"
+  | "personal";
 
-/**
- * Drop a photo at this path and it becomes a selectable wallpaper. Nothing
- * else needs changing: the option appears in Settings once the file loads and
- * stays hidden if it is missing, so the desktop can never show a broken image.
- */
-export const PERSONAL_WALLPAPER_SRC = `${import.meta.env.BASE_URL}wallpaper/deebyanshu.jpg`;
 export type AccentId = "phosphor" | "signal" | "ember";
 export type MotionMode = "full" | "reduced" | "off";
 
@@ -21,95 +22,139 @@ export type Settings = {
   brightness: number; // 0.35..1
 };
 
-export const WALLPAPERS: {
+const wallpaperSrc = (file: string) => `${import.meta.env.BASE_URL}wallpaper/${file}`;
+
+export type Wallpaper = {
   id: WallpaperId;
   name: string;
   note: string;
+  /** the colours behind and around the photo, so the grade stays consistent */
   vars: { a: string; b: string; c: string };
-  /** a photograph rather than a generated ground */
-  photo?: string;
-}[] = [
+  photo: string;
+};
+
+/**
+ * Drop a photo in `public/wallpaper/` and add a row here and it becomes a
+ * selectable wallpaper. Each one is probed before it is offered, so a missing
+ * file hides its own card rather than showing the desktop a broken image.
+ */
+export const WALLPAPERS: Wallpaper[] = [
   {
-    id: "strata",
-    name: "Strata",
-    note: "Deep indigo, single light source",
-    vars: { a: "#101218", b: "#05060a", c: "rgba(232,184,75,0.07)" },
+    id: "steveg",
+    name: "Captain",
+    note: "Steven Gerrard, Anfield, knee-slide",
+    vars: { a: "#1d1113", b: "#08060a", c: "rgba(214,90,80,0.09)" },
+    photo: wallpaperSrc("steveg.jpg"),
   },
   {
-    id: "aperture",
-    name: "Aperture",
-    note: "Cold graphite, wide falloff",
-    vars: { a: "#14161c", b: "#0a0b0e", c: "rgba(148,163,184,0.08)" },
+    id: "anfield",
+    name: "Never Walk Alone",
+    note: "The Kop, scarves up",
+    vars: { a: "#1e1012", b: "#070508", c: "rgba(220,70,70,0.10)" },
+    photo: wallpaperSrc("anfield.jpg"),
   },
   {
-    id: "meridian",
-    name: "Meridian",
-    note: "Warm horizon at low elevation",
-    vars: { a: "#1a1512", b: "#08070a", c: "rgba(226,140,90,0.09)" },
+    id: "zoro",
+    name: "Three Swords",
+    note: "Ink, with one red accent",
+    vars: { a: "#16161a", b: "#08080a", c: "rgba(200,60,60,0.08)" },
+    photo: wallpaperSrc("zoro.jpg"),
   },
   {
-    id: "carbon",
-    name: "Carbon",
-    note: "Near-black, minimum luminance",
-    vars: { a: "#0c0c0e", b: "#050506", c: "rgba(237,234,228,0.04)" },
+    id: "interstellar",
+    name: "Interstellar",
+    note: "Cold horizon, long falloff",
+    vars: { a: "#101822", b: "#04060a", c: "rgba(140,180,215,0.08)" },
+    photo: wallpaperSrc("interstellar.jpg"),
+  },
+  {
+    id: "summit",
+    name: "Summit",
+    note: "Alpenglow under a clear sky",
+    vars: { a: "#111524", b: "#04050b", c: "rgba(226,160,90,0.08)" },
+    photo: wallpaperSrc("summit.jpg"),
+  },
+  {
+    id: "kohli",
+    name: "Chase",
+    note: "Virat Kohli, floodlit",
+    vars: { a: "#141a16", b: "#05070a", c: "rgba(120,190,140,0.07)" },
+    photo: wallpaperSrc("kohli.jpg"),
   },
   {
     id: "personal",
     name: "Hachi-Roku",
     note: "Personal photograph, graded for readability",
-    // the colours behind and around the photo, so the grade stays consistent
     vars: { a: "#141a1e", b: "#05070a", c: "rgba(160,190,205,0.07)" },
-    photo: PERSONAL_WALLPAPER_SRC,
+    photo: wallpaperSrc("deebyanshu.jpg"),
   },
 ];
 
+export const wallpaperById = (id: WallpaperId): Wallpaper | undefined =>
+  WALLPAPERS.find((w) => w.id === id);
+
 /* ── photo availability ──────────────────────────────────────────────
-   The personal wallpaper is an optional asset. We probe it once, and
-   every consumer subscribes to the answer rather than guessing. */
+   Every wallpaper is an optional asset. Each is probed exactly once and every
+   consumer subscribes to the answers rather than guessing. An id missing from
+   the map is still being probed. */
 
-let photoReady: boolean | null = null;
+const photoReady = new Map<WallpaperId, boolean>();
 const photoListeners = new Set<() => void>();
+/** rebuilt on every settle so useSyncExternalStore sees a stable snapshot */
+let photoSnapshot: ReadonlyMap<WallpaperId, boolean> = new Map();
+let probed = false;
 
-function probePhoto() {
-  if (photoReady !== null || typeof window === "undefined") return;
-  const img = new Image();
-  img.onload = () => {
-    photoReady = true;
-    photoListeners.forEach((l) => l());
-    // a photo chosen in a previous session becomes valid again
+function settle(id: WallpaperId, ok: boolean) {
+  photoReady.set(id, ok);
+  photoSnapshot = new Map(photoReady);
+  photoListeners.forEach((l) => l());
+  if (id !== state.wallpaper) return;
+  if (ok) {
+    // the chosen photo has arrived — repaint the ground under it
     applySettings(state);
-  };
-  img.onerror = () => {
-    photoReady = false;
-    photoListeners.forEach((l) => l());
-    // never leave the desktop pointing at a wallpaper that cannot load
-    if (state.wallpaper === "personal") settingsStore.set({ wallpaper: "strata" });
-  };
-  img.src = PERSONAL_WALLPAPER_SRC;
+    return;
+  }
+  // never leave the desktop pointing at a wallpaper that cannot load
+  const alternative = WALLPAPERS.find((w) => w.id !== id && photoReady.get(w.id) === true);
+  if (alternative) settingsStore.set({ wallpaper: alternative.id });
+  else applySettings(state);
 }
 
-export const photoWallpaper = {
-  /** null while the probe is still in flight */
-  available: () => photoReady,
+function probePhotos() {
+  if (probed || typeof window === "undefined") return;
+  probed = true;
+  // the selected wallpaper first: it is the one the desktop is waiting on
+  const order = [...WALLPAPERS].sort((a, b) =>
+    a.id === state.wallpaper ? -1 : b.id === state.wallpaper ? 1 : 0,
+  );
+  for (const wall of order) {
+    const img = new Image();
+    img.onload = () => settle(wall.id, true);
+    img.onerror = () => settle(wall.id, false);
+    img.src = wall.photo;
+  }
+}
+
+export const photoWallpapers = {
+  snapshot: () => photoSnapshot,
   subscribe(l: () => void) {
     photoListeners.add(l);
-    probePhoto();
+    probePhotos();
     return () => photoListeners.delete(l);
   },
 };
 
-export function usePhotoWallpaper(): boolean | null {
-  return useSyncExternalStore(
-    photoWallpaper.subscribe,
-    photoWallpaper.available,
-    () => null,
-  );
+const NO_PHOTOS: ReadonlyMap<WallpaperId, boolean> = new Map();
+
+/** Which wallpaper photographs have loaded. An absent id is still pending. */
+export function usePhotoWallpapers(): ReadonlyMap<WallpaperId, boolean> {
+  return useSyncExternalStore(photoWallpapers.subscribe, photoWallpapers.snapshot, () => NO_PHOTOS);
 }
 
 const KEY = "dos:settings";
 
 const DEFAULTS: Settings = {
-  wallpaper: "strata",
+  wallpaper: "steveg",
   accent: "phosphor",
   // follow the operating system by default; "full" is an explicit opt-out
   motion: "reduced",
@@ -124,7 +169,11 @@ function read(): Settings {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return DEFAULTS;
-    return { ...DEFAULTS, ...(JSON.parse(raw) as Partial<Settings>) };
+    const stored = { ...DEFAULTS, ...(JSON.parse(raw) as Partial<Settings>) };
+    // a wallpaper that no longer exists — an earlier build's generated grounds,
+    // say — must not strand a returning visitor on a background we cannot draw
+    if (!wallpaperById(stored.wallpaper)) stored.wallpaper = DEFAULTS.wallpaper;
+    return stored;
   } catch {
     return DEFAULTS;
   }
@@ -141,13 +190,15 @@ function emit() {
 export function applySettings(s: Settings) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
-  let wall = WALLPAPERS.find((w) => w.id === s.wallpaper) ?? WALLPAPERS[0];
-  // a photo wallpaper only counts once the file has actually loaded
-  if (wall.photo && photoReady !== true) wall = WALLPAPERS[0];
+  const wall = wallpaperById(s.wallpaper) ?? WALLPAPERS[0];
+  // Each wallpaper's colours are graded to its photograph, so they paint the
+  // ground immediately — the photo itself only appears once it has decoded,
+  // which means no flash of an unrelated background while it loads.
+  const ready = photoReady.get(wall.id) === true;
   root.style.setProperty("--wall-a", wall.vars.a);
   root.style.setProperty("--wall-b", wall.vars.b);
   root.style.setProperty("--wall-c", wall.vars.c);
-  root.style.setProperty("--wall-photo", wall.photo ? `url("${wall.photo}")` : "none");
+  root.style.setProperty("--wall-photo", ready ? `url("${wall.photo}")` : "none");
   root.dataset.wallpaper = wall.id;
   root.style.setProperty("--brightness", String(s.brightness));
   root.dataset.accent = s.accent;

@@ -59,7 +59,7 @@ Every control in here does what it says:
 | **Achievements** | Milestones and credentials, with credential IDs printed so they can be checked |
 | **GitHub** | Live repositories, languages, stars, recent pushes |
 | **Signal** | Spotify player (Web Playback SDK), or the local synthesis engine, with real album art |
-| **Settings** | Wallpaper — including a personal photograph — accent, motion, interface effects, sound |
+| **Settings** | Wallpaper, accent, motion, interface effects, sound |
 
 ## Keyboard
 
@@ -118,7 +118,7 @@ Signal runs on System Audio out of the box. To make it a real Spotify player:
    literal loopback IP. The dev server is pinned to `127.0.0.1:5173` for exactly
    this reason, and Signal warns you (with a one-click fix) if the page is open
    on the wrong host.
-3. Put the client id in `.env.local`:
+3. Put the client id in `.env.local` for local development:
 
    ```
    VITE_SPOTIFY_CLIENT_ID=your_client_id
@@ -127,6 +127,18 @@ Signal runs on System Audio out of the box. To make it a real Spotify player:
 The client id is public by design — PKCE exists so a browser app never needs a
 secret, and there is none here. Browser playback requires a Premium account;
 anything else is reported honestly rather than silently degraded.
+
+**Deploying.** `.env.local` is git-ignored, so it does not exist in CI — a build that
+relied on it alone would compile an empty client id, and Signal would quietly drop to
+System Audio on the deployed site while working perfectly on localhost. The id is
+therefore also committed in [`.env.production`](.env.production), which is what the
+GitHub Pages build uses. A `VITE_SPOTIFY_CLIENT_ID` repository secret overrides it if
+you would rather keep it out of the repository.
+
+The other half of a working deploy is the redirect URI: it has to match the deployed
+page byte for byte, base path and trailing slash included. Signal prints the exact URI
+the current build will send, under **Source**, whenever it is not connected — paste
+that into the allow-list in the Spotify dashboard.
 
 **Choosing what plays:** [`src/os/spotify/tracks.ts`](src/os/spotify/tracks.ts) is the
 only file to edit. Paste Spotify links, URIs or bare ids into `SPOTIFY_TRACKS`, or set
@@ -138,12 +150,21 @@ own recent listening, then its top tracks, and labels the column accordingly
 ("Recently played", "Your top tracks"). That is real listening history, never a playlist
 invented on anyone's behalf.
 
-### Desktop wallpaper
+### Desktop wallpapers
 
-Drop an image at `public/wallpaper/deebyanshu.jpg` and it appears in Settings as a
-wallpaper option, cover-cropped and graded so the menu bar, dock and desktop icons
-stay legible. If the file is absent the option is hidden and the desktop falls back to
-Strata — there is no broken image state.
+Every wallpaper is a photograph, and they live in [`public/wallpaper/`](public/wallpaper).
+To add one, drop the file there and add a row to `WALLPAPERS` in
+[`src/os/kernel/settingsStore.ts`](src/os/kernel/settingsStore.ts) — an id, a name, a
+note, and the three colours the desktop should use as ground behind it.
+
+Each image is probed once before it is offered, so a missing file hides its own card in
+Settings rather than showing a broken image, and a wallpaper chosen in an earlier
+session that no longer resolves falls back to one that does. Photographs are
+cover-cropped and graded — desaturated, darkened, weighted at the top and bottom edges
+— so the menu bar, dock and desktop icons stay legible over any of them.
+
+`public/` is the only place these belong. `dist/` is build output: anything dropped
+there is deleted by the next build.
 
 ## Checks
 

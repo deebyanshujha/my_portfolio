@@ -29,6 +29,19 @@ let idCounter = 0;
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 
+/**
+ * Closing a window is a real event, not just a smaller `windows` array.
+ *
+ * An application that owns something outside its own React tree — Signal owns
+ * the audio — has to be told when its last window goes away, and it cannot
+ * learn that from an unmount effect: React runs those on every strict-mode
+ * remount too. Subscribers are notified once per closed window, after the
+ * store has settled.
+ */
+const closeListeners = new Set<(appId: AppId) => void>();
+const emitClosed = (appIds: AppId[]) =>
+  appIds.forEach((appId) => closeListeners.forEach((l) => l(appId)));
+
 function commit(next: State) {
   state = next;
   emit();
@@ -126,6 +139,8 @@ export const windowStore = {
   },
 
   close(id: string) {
+    const closing = state.windows.find((w) => w.id === id);
+    if (!closing) return;
     const remaining = state.windows.filter((w) => w.id !== id);
     const nextFocus =
       state.focusedId === id
@@ -135,6 +150,7 @@ export const windowStore = {
             ?.id ?? null
         : state.focusedId;
     commit({ windows: remaining, focusedId: nextFocus });
+    emitClosed([closing.appId]);
   },
 
   closeApp(appId: AppId) {
@@ -235,7 +251,17 @@ export const windowStore = {
   },
 
   reset() {
+    const closed = state.windows.map((w) => w.appId);
     commit({ windows: [], focusedId: null });
+    emitClosed(closed);
+  },
+
+  /** Notified with the app id of every window that closes. */
+  onClosed(listener: (appId: AppId) => void): () => void {
+    closeListeners.add(listener);
+    return () => {
+      closeListeners.delete(listener);
+    };
   },
 };
 

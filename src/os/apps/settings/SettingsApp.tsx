@@ -3,7 +3,7 @@ import { audio } from "../../kernel/audio";
 import {
   settingsStore,
   useSettings,
-  usePhotoWallpaper,
+  usePhotoWallpapers,
   WALLPAPERS,
   type AccentId,
   type MotionMode,
@@ -37,8 +37,8 @@ const MOTION: { id: MotionMode; name: string; hint: string }[] = [
 
 export default function SettingsApp({ windowId }: AppProps) {
   const settings = useSettings();
-  // the personal photo is an optional asset — no card until the file loads
-  const photoReady = usePhotoWallpaper();
+  // every wallpaper is an optional asset — no card until its file loads
+  const loaded = usePhotoWallpapers();
   const [pane, setPane] = useState<Pane>("appearance");
   const [confirmReset, setConfirmReset] = useState(false);
 
@@ -70,7 +70,7 @@ export default function SettingsApp({ windowId }: AppProps) {
             <>
               <Label className="mb-2.5">Wallpaper</Label>
               <div className="grid grid-cols-2 gap-2.5">
-                {WALLPAPERS.filter((w) => !w.photo || photoReady === true).map((w) => {
+                {WALLPAPERS.filter((w) => loaded.get(w.id) === true).map((w) => {
                   const active = settings.wallpaper === w.id;
                   return (
                     <button
@@ -83,18 +83,12 @@ export default function SettingsApp({ windowId }: AppProps) {
                     >
                       <span
                         className="block h-[74px] w-full"
-                        style={
-                          w.photo
-                            ? {
-                                backgroundImage: `linear-gradient(180deg, rgba(4,5,8,0.5), rgba(4,5,8,0.25)), url("${w.photo}")`,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center 42%",
-                                filter: "saturate(0.78) brightness(0.9)",
-                              }
-                            : {
-                                background: `radial-gradient(120% 82% at 58% -6%, ${w.vars.a} 0%, ${w.vars.b} 62%, #030304 100%)`,
-                              }
-                        }
+                        style={{
+                          backgroundImage: `linear-gradient(180deg, rgba(4,5,8,0.5), rgba(4,5,8,0.25)), url("${w.photo}")`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center 42%",
+                          filter: "saturate(0.78) brightness(0.9)",
+                        }}
                       />
                       <span className="block px-2.5 py-2">
                         <span className="block text-[12.5px]" style={{ color: "var(--ink)" }}>

@@ -361,12 +361,12 @@ async function main() {
   /* settings changes something real */
   await dock(page, "Settings").click();
   await page.waitForTimeout(700);
-  await page.getByRole("button", { name: /Aperture/ }).click();
+  await page.getByRole("button", { name: /Interstellar/ }).click();
   await page.waitForTimeout(350);
   const wall = await page.evaluate(() =>
     getComputedStyle(document.documentElement).getPropertyValue("--wall-a").trim(),
   );
-  check("wallpaper setting applies", wall === "#14161c", `--wall-a=${wall}`);
+  check("wallpaper setting applies", wall === "#101822", `--wall-a=${wall}`);
   await shot(page, "11-settings");
 
   /* keyboard */

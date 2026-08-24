@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { motion } from "motion/react";
 import { launch } from "../kernel/appRegistry";
 import { windowStore } from "../kernel/windowStore";
-import { settingsStore, useSettings, WALLPAPERS } from "../kernel/settingsStore";
+import { settingsStore, useSettings, usePhotoWallpapers, WALLPAPERS } from "../kernel/settingsStore";
 
 export type ContextPoint = { x: number; y: number };
 
@@ -14,6 +14,15 @@ export function DesktopContextMenu({
   onClose: () => void;
 }) {
   const settings = useSettings();
+  // only cycle through wallpapers whose photograph has actually loaded
+  const loaded = usePhotoWallpapers();
+  const available = WALLPAPERS.filter((w) => loaded.get(w.id) === true);
+  const current = available.findIndex((w) => w.id === settings.wallpaper);
+  // -1 means the current wallpaper is still decoding, in which case "next" is
+  // simply the first one that has arrived — never a no-op onto itself
+  const next = available.length
+    ? available[current === -1 ? 0 : (current + 1) % available.length]
+    : undefined;
 
   useEffect(() => {
     const close = () => onClose();
@@ -26,18 +35,16 @@ export function DesktopContextMenu({
   }, [onClose]);
 
   const nextWallpaper = () => {
-    const i = WALLPAPERS.findIndex((w) => w.id === settings.wallpaper);
-    settingsStore.set({ wallpaper: WALLPAPERS[(i + 1) % WALLPAPERS.length].id });
+    if (next) settingsStore.set({ wallpaper: next.id });
   };
 
   const items = [
     { label: "New Terminal", run: () => launch("terminal") },
     { label: "Open Projects", run: () => launch("projects") },
     { sep: true as const },
-    {
-      label: `Next Wallpaper — ${WALLPAPERS[(WALLPAPERS.findIndex((w) => w.id === settings.wallpaper) + 1) % WALLPAPERS.length].name}`,
-      run: nextWallpaper,
-    },
+    ...(next && available.length > 1
+      ? [{ label: `Next Wallpaper — ${next.name}`, run: nextWallpaper }]
+      : []),
     { label: "Tidy Windows", run: () => windowStore.reflow() },
     { sep: true as const },
     { label: "Settings…", run: () => launch("settings") },

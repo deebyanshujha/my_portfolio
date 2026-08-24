@@ -3,6 +3,8 @@ dist/
 .env
 .env.*
 !.env.example
+# the public PKCE client id — see the file for why it is committed
+!.env.production
 
 artifacts/
 *.log

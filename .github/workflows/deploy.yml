@@ -32,9 +32,19 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        # The public PKCE client id is committed in .env.production so the
+        # deployed site has Spotify without any repository configuration. A
+        # VITE_SPOTIFY_CLIENT_ID secret still overrides it — but only when it is
+        # actually set: an empty process env var outranks the .env file in Vite,
+        # so exporting it unconditionally would silently disable Spotify.
+        run: |
+          if [ -n "$SPOTIFY_CLIENT_ID_OVERRIDE" ]; then
+            export VITE_SPOTIFY_CLIENT_ID="$SPOTIFY_CLIENT_ID_OVERRIDE"
+          fi
+          npm run build
         env:
           VITE_BASE_PATH: /my_portfolio/
+          SPOTIFY_CLIENT_ID_OVERRIDE: ${{ secrets.VITE_SPOTIFY_CLIENT_ID }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

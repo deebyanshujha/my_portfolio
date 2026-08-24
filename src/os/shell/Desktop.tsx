@@ -13,9 +13,9 @@ import { appBus } from "../kernel/appBus";
 import { musicStore } from "../kernel/musicStore";
 import {
   prefersStill,
-  usePhotoWallpaper,
+  usePhotoWallpapers,
+  wallpaperById,
   useSettings,
-  WALLPAPERS,
 } from "../kernel/settingsStore";
 
 export function Desktop() {
@@ -34,6 +34,17 @@ export function Desktop() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  // Quitting Signal silences the machine. The audio belongs to the application,
+  // so it must not outlive its window — whether that window was closed from its
+  // own traffic light, the dock, the menu bar, or Close All Windows.
+  useEffect(
+    () =>
+      windowStore.onClosed((appId) => {
+        if (appId === "music") musicStore.stop();
+      }),
+    [],
+  );
+
   // An operating system with nothing open is a blank wall. Arriving for the
   // first time opens About, so there is something to read immediately and the
   // window system demonstrates itself. Returning visitors keep their desktop.
@@ -49,7 +60,8 @@ export function Desktop() {
     <div
       className="relative h-full w-full overflow-hidden"
       onContextMenu={(e) => {
-        if ((e.target as HTMLElement).closest("[data-window-layer] > *")) return;
+        if ((e.target as HTMLElement).closest("[data-window-layer] > *"))
+          return;
         e.preventDefault();
         setMenu({ x: e.clientX, y: e.clientY });
       }}
@@ -69,10 +81,17 @@ export function Desktop() {
         {/* The layer spans the desktop so windows can sit anywhere, but it must
             not swallow clicks meant for the ground or the desktop icons — only
             the windows themselves take pointer events. */}
-        <div data-window-layer className="pointer-events-none absolute inset-0 z-windows">
+        <div
+          data-window-layer
+          className="pointer-events-none absolute inset-0 z-windows"
+        >
           <AnimatePresence>
             {windows.map((win) => (
-              <Window key={win.id} win={win} focused={win.id === focusedId && !win.minimized} />
+              <Window
+                key={win.id}
+                win={win}
+                focused={win.id === focusedId && !win.minimized}
+              />
             ))}
           </AnimatePresence>
         </div>
@@ -93,27 +112,32 @@ export function Desktop() {
 
 function Wallpaper() {
   const settings = useSettings();
-  const photoReady = usePhotoWallpaper();
-  const chosen = WALLPAPERS.find((w) => w.id === settings.wallpaper);
-  const photo = chosen?.photo && photoReady === true ? chosen.photo : null;
+  const loaded = usePhotoWallpapers();
+  const chosen = wallpaperById(settings.wallpaper);
+  // the generated ground below is what shows while the photograph decodes
+  const photo = chosen && loaded.get(chosen.id) === true ? chosen.photo : null;
 
   if (photo) return <PhotoWallpaper src={photo} />;
 
   return (
-    <div className="grain absolute inset-0" style={{ background: 'var(--wall-b)' }}>
+    <div
+      className="grain absolute inset-0"
+      style={{ background: "var(--wall-b)" }}
+    >
       {/* one light source, high and off-centre — the same idea as the landing
           page, carried inside the machine */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(140% 96% at 62% -12%, var(--wall-a) 0%, var(--wall-b) 58%, #020203 100%)',
+            "radial-gradient(140% 96% at 62% -12%, var(--wall-a) 0%, var(--wall-b) 58%, #020203 100%)",
         }}
       />
       <div
         className="absolute inset-0"
         style={{
-          background: 'radial-gradient(52% 46% at 62% -4%, var(--wall-c), transparent 72%)',
+          background:
+            "radial-gradient(52% 46% at 62% -4%, var(--wall-c), transparent 72%)",
         }}
       />
 
@@ -123,9 +147,11 @@ function Wallpaper() {
         className="absolute inset-0"
         style={{
           background:
-            'repeating-linear-gradient(178deg, rgba(237,234,228,0.028) 0 1px, transparent 1px 190px)',
-          maskImage: 'linear-gradient(180deg, transparent 4%, #000 46%, transparent 96%)',
-          WebkitMaskImage: 'linear-gradient(180deg, transparent 4%, #000 46%, transparent 96%)',
+            "repeating-linear-gradient(178deg, rgba(237,234,228,0.028) 0 1px, transparent 1px 190px)",
+          maskImage:
+            "linear-gradient(180deg, transparent 4%, #000 46%, transparent 96%)",
+          WebkitMaskImage:
+            "linear-gradient(180deg, transparent 4%, #000 46%, transparent 96%)",
         }}
       />
 
@@ -134,10 +160,12 @@ function Wallpaper() {
         className="absolute inset-0"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(237,234,228,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(237,234,228,0.03) 1px, transparent 1px)',
-          backgroundSize: '78px 78px',
-          maskImage: 'radial-gradient(96% 74% at 62% -4%, #000 8%, transparent 72%)',
-          WebkitMaskImage: 'radial-gradient(96% 74% at 62% -4%, #000 8%, transparent 72%)',
+            "linear-gradient(rgba(237,234,228,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(237,234,228,0.03) 1px, transparent 1px)",
+          backgroundSize: "78px 78px",
+          maskImage:
+            "radial-gradient(96% 74% at 62% -4%, #000 8%, transparent 72%)",
+          WebkitMaskImage:
+            "radial-gradient(96% 74% at 62% -4%, #000 8%, transparent 72%)",
         }}
       />
 
@@ -146,7 +174,7 @@ function Wallpaper() {
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(196deg, transparent 34%, rgba(237,234,228,0.032) 52%, transparent 66%)',
+            "linear-gradient(196deg, transparent 34%, rgba(237,234,228,0.032) 52%, transparent 66%)",
         }}
       />
 
@@ -154,7 +182,7 @@ function Wallpaper() {
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(130% 100% at 50% 42%, transparent 42%, rgba(0,0,0,0.62) 100%)',
+            "radial-gradient(130% 100% at 50% 42%, transparent 42%, rgba(0,0,0,0.62) 100%)",
         }}
       />
     </div>
@@ -173,31 +201,43 @@ function Wallpaper() {
  */
 function PhotoWallpaper({ src }: { src: string }) {
   return (
-    <div className="grain absolute inset-0 overflow-hidden" style={{ background: "var(--wall-b)" }}>
+    <div
+      className="grain absolute inset-0 overflow-hidden"
+      style={{ background: "var(--wall-b)" }}
+    >
       <div
         className="absolute inset-0"
         style={{
           backgroundImage: `url("${src}")`,
           backgroundSize: "cover",
           backgroundPosition: "center 42%",
-          filter: "saturate(0.7) contrast(1.02) brightness(0.66)",
+          filter: "saturate(0.7) contrast(1.02) brightness(0.88)",
         }}
       />
       {/* the overall scrim: enough to sit UI on, not enough to lose the photo */}
-      <div className="absolute inset-0" style={{ background: "rgba(6,7,10,0.42)" }} />
+      <div
+        className="absolute inset-0"
+        style={{ background: "rgba(6,7,10,0.42)" }}
+      />
       {/* chrome bands — menu bar at the top, dock at the bottom */}
       <div
         className="absolute inset-x-0 top-0 h-[22%]"
-        style={{ background: "linear-gradient(180deg, rgba(4,5,8,0.7), transparent)" }}
+        style={{
+          background: "linear-gradient(180deg, rgba(4,5,8,0.7), transparent)",
+        }}
       />
       <div
         className="absolute inset-x-0 bottom-0 h-[26%]"
-        style={{ background: "linear-gradient(0deg, rgba(4,5,8,0.66), transparent)" }}
+        style={{
+          background: "linear-gradient(0deg, rgba(4,5,8,0.66), transparent)",
+        }}
       />
       {/* the column the desktop icons live in */}
       <div
         className="absolute inset-y-0 right-0 w-[220px]"
-        style={{ background: "linear-gradient(270deg, rgba(4,5,8,0.6), transparent)" }}
+        style={{
+          background: "linear-gradient(270deg, rgba(4,5,8,0.6), transparent)",
+        }}
       />
       {/* the same corner falloff every DOS wallpaper has */}
       <div
@@ -288,7 +328,9 @@ function useShortcuts({ toggleSpotlight }: { toggleSpotlight: () => void }) {
         typedAt = now;
         if (typed.endsWith("lamb")) {
           typed = "";
-          const existing = windowStore.get().windows.find((w) => w.appId === "terminal");
+          const existing = windowStore
+            .get()
+            .windows.find((w) => w.appId === "terminal");
           if (existing) {
             windowStore.focus(existing.id);
             appBus.emit(existing.id, "run", "lamb");

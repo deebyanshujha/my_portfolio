@@ -254,7 +254,11 @@ function SourcePanel({ music }: { music: ReturnType<typeof useMusic> }) {
         {sp.phase === "error" && (sp.error ?? "Spotify is unavailable.")}
       </p>
 
-      {(sp.phase === "unconfigured" || loopback) && (
+      {/* Until the connection is actually up, the single most useful fact is
+          which redirect URI this build will send Spotify — a deployed origin
+          that is not on the dashboard's allow-list fails with nothing else to
+          go on. */}
+      {sp.phase !== "ready" && (
         <p
           className="mt-1.5 break-all font-mono text-[10px] leading-relaxed"
           style={{ color: "var(--ink-4)" }}

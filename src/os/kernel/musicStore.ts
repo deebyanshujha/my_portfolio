@@ -429,6 +429,24 @@ export const musicStore = {
     commit({ playing: false });
   },
 
+  /**
+   * Stop, as distinct from pause.
+   *
+   * Quitting Signal has to silence the machine — audio that outlives the
+   * window that owns it is a bug, not a feature. The Spotify session and the
+   * device are left intact: the account is still connected, so reopening
+   * Signal picks up where it left off rather than making the visitor sign in
+   * again.
+   */
+  stop() {
+    if (state.backend === "spotify") {
+      void device?.player.pause().catch(() => {});
+    } else {
+      audio.stop();
+    }
+    commit({ playing: false });
+  },
+
   toggle() {
     if (state.playing) {
       musicStore.pause();
