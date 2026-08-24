@@ -35,15 +35,33 @@ export function AppGlyph({ id }: { id: AppId }) {
     case "projects":
       return (
         <svg {...common}>
-          <path d="M5 20V9a1 1 0 0 1 1-1h4.6l1.8 2.2H22a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1Z" />
+          <path
+            d="M5 20V9a1 1 0 0 1 1-1h4.6l1.8 2.2H22a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1Z"
+            fill="currentColor"
+            fillOpacity={0.18}
+          />
           <path d="M5 13h18" opacity={0.45} />
         </svg>
       );
     case "about":
       return (
         <svg {...common}>
-          <rect x="4.5" y="7" width="19" height="14" rx="2" />
-          <circle cx="10.5" cy="13" r="2.4" />
+          <rect
+            x="4.5"
+            y="7"
+            width="19"
+            height="14"
+            rx="2"
+            fill="currentColor"
+            fillOpacity={0.16}
+          />
+          <circle
+            cx="10.5"
+            cy="13"
+            r="2.4"
+            fill="currentColor"
+            fillOpacity={0.7}
+          />
           <path
             d="M16 12h4M16 16h4M7 19c.6-1.6 2-2.4 3.5-2.4S13.4 17.4 14 19"
             opacity={0.7}
@@ -53,27 +71,45 @@ export function AppGlyph({ id }: { id: AppId }) {
     case "resume":
       return (
         <svg {...common}>
-          <path d="M7 4.5h9L21 9.5V23a.5.5 0 0 1-.5.5h-13A.5.5 0 0 1 7 23V5a.5.5 0 0 1 .5-.5Z" />
+          <path
+            d="M7 4.5h9L21 9.5V23a.5.5 0 0 1-.5.5h-13A.5.5 0 0 1 7 23V5a.5.5 0 0 1 .5-.5Z"
+            fill="currentColor"
+            fillOpacity={0.16}
+          />
           <path d="M16 4.5v5h5" opacity={0.6} />
           <path d="M10.5 14h7M10.5 17.5h7M10.5 21h4" opacity={0.7} />
         </svg>
       );
     case "github":
       return (
-        <svg {...common}>
-          <circle cx="8" cy="7.5" r="2.4" />
-          <circle cx="8" cy="20.5" r="2.4" />
-          <circle cx="19" cy="14" r="2.4" />
-          <path d="M8 10v8" />
-          <path d="M8 14h5.5a3.5 3.5 0 0 0 3.5-.4" opacity={0.8} />
+        <svg {...common} fill="currentColor" stroke="none" viewBox="0 0 24 24">
+          <path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.8.1-.8.1-.8-.1 1.2.8 1.2.8 1.2 1.1 1.9 2.9 1.4 3.6 1.1.1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C16.7 4.6 17.7 5 17.7 5c.6 1.6.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z" />
         </svg>
       );
     case "skills":
       return (
         <svg {...common}>
-          <circle cx="14" cy="6.5" r="2.2" />
-          <circle cx="6.5" cy="18" r="2.2" />
-          <circle cx="21.5" cy="18" r="2.2" />
+          <circle
+            cx="14"
+            cy="6.5"
+            r="2.2"
+            fill="currentColor"
+            fillOpacity={0.7}
+          />
+          <circle
+            cx="6.5"
+            cy="18"
+            r="2.2"
+            fill="currentColor"
+            fillOpacity={0.7}
+          />
+          <circle
+            cx="21.5"
+            cy="18"
+            r="2.2"
+            fill="currentColor"
+            fillOpacity={0.7}
+          />
           <circle cx="14" cy="14" r="1.6" opacity={0.7} />
           <path
             d="M14 8.7v3.7M12.6 15.1 8.2 17M15.5 15.1 19.8 17M8.7 18h10.6"
@@ -84,16 +120,31 @@ export function AppGlyph({ id }: { id: AppId }) {
     case "achievements":
       return (
         <svg {...common}>
-          <path d="M14 4.5 21 8.2v6.1c0 3.9-2.8 7.2-7 9.2-4.2-2-7-5.3-7-9.2V8.2Z" />
+          <path
+            d="M14 4.5 21 8.2v6.1c0 3.9-2.8 7.2-7 9.2-4.2-2-7-5.3-7-9.2V8.2Z"
+            fill="currentColor"
+            fillOpacity={0.18}
+          />
           <path d="M10.8 13.8 13.2 16.2 17.6 11.6" opacity={0.85} />
         </svg>
       );
     case "music":
       return (
         <svg {...common}>
-          <path
-            d="M8 18V8.5M13 21V6M18 18V8.5M23 15v-4M3 15v-4"
-            opacity={0.9}
+          <path d="M10 18V7l10-2v11" strokeWidth={1.9} />
+          <circle
+            cx="7.5"
+            cy="18.5"
+            r="3"
+            fill="currentColor"
+            fillOpacity={0.3}
+          />
+          <circle
+            cx="17.5"
+            cy="16.5"
+            r="3"
+            fill="currentColor"
+            fillOpacity={0.3}
           />
         </svg>
       );

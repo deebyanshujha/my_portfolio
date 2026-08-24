@@ -309,7 +309,7 @@ function useShortcuts({ toggleSpotlight }: { toggleSpotlight: () => void }) {
       }
       // Escape closes the front window, but only once every popover is gone —
       // the menus and Control Centre take the first Escape themselves
-      if (e.key === "Escape" && focused && !typing) {
+      if (e.key === "Escape" && focused) {
         if (document.querySelector("[data-overlay]")) return;
         windowStore.close(focused);
         return;
