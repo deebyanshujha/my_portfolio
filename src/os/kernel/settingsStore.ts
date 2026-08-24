@@ -22,7 +22,8 @@ export type Settings = {
   brightness: number; // 0.35..1
 };
 
-const wallpaperSrc = (file: string) => `${import.meta.env.BASE_URL}wallpaper/${file}`;
+const wallpaperSrc = (file: string) =>
+  `${import.meta.env.BASE_URL}wallpaper/${file}`;
 
 export type Wallpaper = {
   id: WallpaperId;
@@ -115,7 +116,9 @@ function settle(id: WallpaperId, ok: boolean) {
     return;
   }
   // never leave the desktop pointing at a wallpaper that cannot load
-  const alternative = WALLPAPERS.find((w) => w.id !== id && photoReady.get(w.id) === true);
+  const alternative = WALLPAPERS.find(
+    (w) => w.id !== id && photoReady.get(w.id) === true,
+  );
   if (alternative) settingsStore.set({ wallpaper: alternative.id });
   else applySettings(state);
 }
@@ -148,13 +151,17 @@ const NO_PHOTOS: ReadonlyMap<WallpaperId, boolean> = new Map();
 
 /** Which wallpaper photographs have loaded. An absent id is still pending. */
 export function usePhotoWallpapers(): ReadonlyMap<WallpaperId, boolean> {
-  return useSyncExternalStore(photoWallpapers.subscribe, photoWallpapers.snapshot, () => NO_PHOTOS);
+  return useSyncExternalStore(
+    photoWallpapers.subscribe,
+    photoWallpapers.snapshot,
+    () => NO_PHOTOS,
+  );
 }
 
 const KEY = "dos:settings";
 
 const DEFAULTS: Settings = {
-  wallpaper: "steveg",
+  wallpaper: "interstellar",
   accent: "phosphor",
   // follow the operating system by default; "full" is an explicit opt-out
   motion: "reduced",
@@ -198,7 +205,10 @@ export function applySettings(s: Settings) {
   root.style.setProperty("--wall-a", wall.vars.a);
   root.style.setProperty("--wall-b", wall.vars.b);
   root.style.setProperty("--wall-c", wall.vars.c);
-  root.style.setProperty("--wall-photo", ready ? `url("${wall.photo}")` : "none");
+  root.style.setProperty(
+    "--wall-photo",
+    ready ? `url("${wall.photo}")` : "none",
+  );
   root.dataset.wallpaper = wall.id;
   root.style.setProperty("--brightness", String(s.brightness));
   root.dataset.accent = s.accent;
@@ -236,7 +246,11 @@ export const settingsStore = {
 };
 
 export function useSettings(): Settings {
-  return useSyncExternalStore(settingsStore.subscribe, settingsStore.get, () => DEFAULTS);
+  return useSyncExternalStore(
+    settingsStore.subscribe,
+    settingsStore.get,
+    () => DEFAULTS,
+  );
 }
 
 /** True when animation should be suppressed (user setting or OS preference). */
