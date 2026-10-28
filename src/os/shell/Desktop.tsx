@@ -11,6 +11,7 @@ import { useWindows, windowStore } from "../kernel/windowStore";
 import { launch } from "../kernel/appRegistry";
 import { appBus } from "../kernel/appBus";
 import { musicStore } from "../kernel/musicStore";
+import { useStage } from "../stage/StageProvider";
 import {
   prefersStill,
   usePhotoWallpapers,
@@ -22,6 +23,8 @@ export function Desktop() {
   const { windows, focusedId } = useWindows();
   const settings = useSettings();
   const still = prefersStill(settings);
+  // mounted under the boot screen; this is the moment it is uncovered
+  const shown = useStage().stage === "desktop";
   const [menu, setMenu] = useState<ContextPoint | null>(null);
   const [spotlight, setSpotlight] = useState(false);
 
@@ -49,12 +52,12 @@ export function Desktop() {
   // first time opens About, so there is something to read immediately and the
   // window system demonstrates itself. Returning visitors keep their desktop.
   useEffect(() => {
-    if (windowStore.get().windows.length > 0) return;
+    if (!shown || windowStore.get().windows.length > 0) return;
     const timer = window.setTimeout(() => {
       if (windowStore.get().windows.length === 0) launch("about");
-    }, 620);
+    }, 520);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [shown]);
 
   return (
     <div
@@ -71,8 +74,18 @@ export function Desktop() {
       <motion.div
         className="absolute inset-0"
         initial={still ? { opacity: 0 } : { opacity: 0, scale: 1.015 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: still ? 0.2 : 0.7, ease: [0.16, 1, 0.3, 1] }}
+        animate={
+          shown
+            ? { opacity: 1, scale: 1 }
+            : still
+              ? { opacity: 0 }
+              : { opacity: 0, scale: 1.015 }
+        }
+        transition={{
+          duration: still ? 0.2 : 0.8,
+          delay: shown && !still ? 0.12 : 0,
+          ease: [0.16, 1, 0.3, 1],
+        }}
       >
         <MenuBar />
         <DesktopWidgets />
@@ -117,8 +130,33 @@ function Wallpaper() {
   // the generated ground below is what shows while the photograph decodes
   const photo = chosen && loaded.get(chosen.id) === true ? chosen.photo : null;
 
-  if (photo) return <PhotoWallpaper src={photo} />;
+  return (
+    <>
+      <GeneratedWallpaper />
+      {/* The photograph sits over the ground rather than replacing it. If it
+          was decoded before the desktop mounted — the usual case, since it is
+          fetched at startup — it is simply there; otherwise it fades in over a
+          ground already graded to its colours, and a change of wallpaper is a
+          cross-fade rather than a cut. */}
+      <AnimatePresence initial={false}>
+        {photo && (
+          <motion.div
+            key={photo}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+          >
+            <PhotoWallpaper src={photo} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
 
+function GeneratedWallpaper() {
   return (
     <div
       className="grain absolute inset-0"

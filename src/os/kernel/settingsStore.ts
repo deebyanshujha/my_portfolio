@@ -123,26 +123,39 @@ function settle(id: WallpaperId, ok: boolean) {
   else applySettings(state);
 }
 
-function probePhotos() {
+function probe(wall: Wallpaper): Promise<void> {
+  const img = new Image();
+  img.decoding = "async";
+  img.src = wall.photo;
+  // decoded, not just downloaded — so the first frame it is painted in is the
+  // finished photograph rather than a blank layer waiting on the decoder
+  return img
+    .decode()
+    .then(() => settle(wall.id, true))
+    .catch(() => settle(wall.id, false));
+}
+
+/**
+ * Called at startup, long before the desktop exists: the visitor spends at
+ * least the greeting and the landing page outside, which is plenty of time for
+ * the chosen photograph to arrive. It goes alone, so the others cannot compete
+ * with it for bandwidth; the rest follow once it has settled.
+ */
+export function preloadWallpapers() {
   if (probed || typeof window === "undefined") return;
   probed = true;
-  // the selected wallpaper first: it is the one the desktop is waiting on
-  const order = [...WALLPAPERS].sort((a, b) =>
-    a.id === state.wallpaper ? -1 : b.id === state.wallpaper ? 1 : 0,
-  );
-  for (const wall of order) {
-    const img = new Image();
-    img.onload = () => settle(wall.id, true);
-    img.onerror = () => settle(wall.id, false);
-    img.src = wall.photo;
-  }
+  const chosen = wallpaperById(state.wallpaper);
+  const rest = WALLPAPERS.filter((w) => w !== chosen);
+  const others = () => rest.forEach((w) => void probe(w));
+  if (chosen) void probe(chosen).then(others);
+  else others();
 }
 
 export const photoWallpapers = {
   snapshot: () => photoSnapshot,
   subscribe(l: () => void) {
     photoListeners.add(l);
-    probePhotos();
+    preloadWallpapers();
     return () => photoListeners.delete(l);
   },
 };

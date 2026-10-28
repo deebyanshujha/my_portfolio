@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { AnimatePresence, motion } from "motion/react";
 import { Landing } from "../landing/Landing";
 import { Desktop } from "./shell/Desktop";
 import { ScreenPortal } from "./stage/ScreenPortal";
@@ -34,24 +33,21 @@ export function Experience() {
     musicStore.setVolume(settings.soundEnabled ? settings.volume : 0);
   }, [settings.soundEnabled, settings.volume]);
 
-  const inside = stage === "desktop";
+  // The boot screen is opaque, so the two halves swap underneath it: the room
+  // is dropped as soon as it is covered, and the desktop is built while the
+  // system initialises — leaving the boot is then just uncovering it.
+  const outside =
+    stage === "landing" || stage === "waking" || stage === "entering";
 
   return (
     <div className="relative h-full w-full">
-      <AnimatePresence>
-        {stage !== "desktop" && (
-          <motion.div
-            key="landing"
-            className="absolute inset-0"
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Landing />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {outside && (
+        <div className="absolute inset-0">
+          <Landing />
+        </div>
+      )}
 
-      {inside && <Desktop />}
+      {!outside && <Desktop />}
 
       <ScreenPortal />
 
